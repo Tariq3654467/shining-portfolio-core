@@ -9,6 +9,7 @@ import couple1 from "@/assets/happy-couple-1.jpg";
 import couple2 from "@/assets/happy-couple-2.jpg";
 import couple3 from "@/assets/happy-couple-3.jpg";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -16,6 +17,7 @@ const fadeUp = {
 };
 
 const Index = () => {
+  const navigate = useNavigate();
   const [storyIdx, setStoryIdx] = useState(0);
 
   const stories = [
@@ -57,7 +59,7 @@ const Index = () => {
           >
             <h2 className="text-2xl font-heading font-bold text-center text-gradient-primary mb-1">Create Your Account</h2>
             <p className="text-sm text-muted-foreground text-center mb-6">Fill out the form to get started.</p>
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate("/expectations"); }}>
               <Select>
                 <SelectTrigger><SelectValue placeholder="On Behalf" /></SelectTrigger>
                 <SelectContent>
