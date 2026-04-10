@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const Register = () => (
+const Register = () => {
+  const navigate = useNavigate();
+  return (
   <div className="min-h-[80vh] flex items-center justify-center py-12">
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -18,7 +20,7 @@ const Register = () => (
         <p className="text-sm text-muted-foreground">Join ebihe.com and find your perfect match</p>
       </div>
 
-      <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate("/expectations"); }}>
         <Select>
           <SelectTrigger><SelectValue placeholder="On Behalf" /></SelectTrigger>
           <SelectContent>
@@ -56,6 +58,7 @@ const Register = () => (
       </div>
     </motion.div>
   </div>
-);
+  );
+};
 
 export default Register;
