@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# Shining Portfolio Core
 
 TODO: Document your project here
