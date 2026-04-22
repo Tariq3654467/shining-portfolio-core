@@ -6,31 +6,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-
+ 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+ 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Attempting login for:", email);
-
+ 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      console.log("Supabase response:", { data, error });
-
+ 
       if (error) throw error;
-
-      toast.success("Logged in successfully!");
-      console.log("Navigating to /expectations...");
-      navigate("/expectations");
+ 
+      // Check if this user already has a profile (returning user)
+      // New users go through /expectations, returning users go to /dashboard
+      if (data.user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('id', data.user.id)
+          .single();
+ 
+        toast.success("Welcome back!");
+        // If profile exists and has a name, they've completed onboarding
+        if (profileData?.first_name) {
+          navigate("/dashboard");
+        } else {
+          navigate("/expectations");
+        }
+      }
     } catch (error: any) {
       toast.error(error.message || "Invalid email or password");
       console.error("Login error:", error);
@@ -38,6 +49,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+ 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <motion.div
@@ -50,18 +62,18 @@ const Login = () => {
           <h1 className="text-2xl font-heading font-bold">Welcome Back</h1>
           <p className="text-sm text-muted-foreground">Log in to your ebihe.com account</p>
         </div>
-
+ 
         <form className="space-y-4" onSubmit={handleLogin}>
-          <Input 
-            type="email" 
-            placeholder="Email address" 
+          <Input
+            type="email"
+            placeholder="Email address"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input 
-            type="password" 
-            placeholder="Password" 
+          <Input
+            type="password"
+            placeholder="Password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -73,8 +85,8 @@ const Login = () => {
             </label>
             <Link to="/" className="text-primary hover:underline">Forgot password?</Link>
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full gradient-primary text-primary-foreground"
             disabled={loading}
           >
@@ -82,7 +94,7 @@ const Login = () => {
             {loading ? "Logging In..." : "Log In"}
           </Button>
         </form>
-
+ 
         <div className="mt-6 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
           <Link to="/register" className="text-primary font-medium hover:underline">Register now</Link>
@@ -91,5 +103,6 @@ const Login = () => {
     </div>
   );
 };
-
+ 
 export default Login;
+ 

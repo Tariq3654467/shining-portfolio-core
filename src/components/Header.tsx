@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Phone, Heart, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-
+ 
 const navLinks = [
   { label: "Home", path: "/" },
   { label: "Active Members", path: "/active-members" },
@@ -12,24 +12,20 @@ const navLinks = [
   { label: "About", path: "/about" },
   { label: "Contact Us", path: "/contact" },
 ];
-
+ 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, profile, signOut } = useAuth();
-
+  // FIX: Don't destructure loading — use it to avoid showing auth buttons during init
+  const { user, profile, loading, signOut } = useAuth();
+ 
   const handleLogout = async () => {
-    console.log("Logout button clicked in Header");
-    try {
-      await signOut();
-      console.log("SignOut successful, navigating to /login...");
-      navigate("/login");
-    } catch (error) {
-      console.error("Error during logout in Header:", error);
-    }
+    // signOut now clears state immediately, so navigation is instant
+    await signOut();
+    navigate("/login");
   };
-
+ 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b">
       <div className="container flex items-center justify-between h-16">
@@ -40,7 +36,7 @@ const Header = () => {
             ebihe<span className="text-primary">.com</span>
           </span>
         </Link>
-
+ 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => (
@@ -57,44 +53,47 @@ const Header = () => {
             </Link>
           ))}
         </nav>
-
+ 
         {/* CTA / User Menu */}
         <div className="hidden lg:flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
             <Phone className="h-4 w-4" />
             <span>+1 (530) 574-9007</span>
           </div>
-
-          {user ? (
-            <div className="flex items-center gap-2">
-              <Link to="/dashboard">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <LayoutDashboard className="h-4 w-4" /> Dashboard
+ 
+          {/* FIX: Don't render auth buttons until loading is done to prevent flicker */}
+          {!loading && (
+            user ? (
+              <div className="flex items-center gap-2">
+                <Link to="/dashboard">
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  </Button>
+                </Link>
+                <Link to="/profile">
+                  <Button variant="outline" size="sm" className="gap-2 border-primary/20 hover:bg-primary/5">
+                    <User className="h-4 w-4 text-primary" /> {profile?.first_name || "Profile"}
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={handleLogout} title="Logout">
+                  <LogOut className="h-4 w-4 text-muted-foreground" />
                 </Button>
-              </Link>
-              <Link to="/profile">
-                <Button variant="outline" size="sm" className="gap-2 border-primary/20 hover:bg-primary/5">
-                  <User className="h-4 w-4 text-primary" /> {profile?.first_name || "Profile"}
-                </Button>
-              </Link>
-              <Button variant="ghost" size="sm" onClick={handleLogout} title="Logout">
-                <LogOut className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Log In</Button>
-              </Link>
-              <Link to="/register">
-                <Button size="sm" className="gradient-primary text-primary-foreground">
-                  Registration
-                </Button>
-              </Link>
-            </>
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">Log In</Button>
+                </Link>
+                <Link to="/register">
+                  <Button size="sm" className="gradient-primary text-primary-foreground">
+                    Registration
+                  </Button>
+                </Link>
+              </>
+            )
           )}
         </div>
-
+ 
         {/* Mobile toggle */}
         <button
           className="lg:hidden p-2"
@@ -103,7 +102,7 @@ const Header = () => {
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
-
+ 
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden border-t bg-card pb-4">
@@ -122,33 +121,35 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
-            
+ 
             <div className="flex flex-col gap-2 mt-3 px-3">
-              {user ? (
-                <>
-                  <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full justify-start gap-2">
-                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+              {!loading && (
+                user ? (
+                  <>
+                    <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full justify-start gap-2">
+                        <LayoutDashboard className="h-4 w-4" /> Dashboard
+                      </Button>
+                    </Link>
+                    <Link to="/profile" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full justify-start gap-2">
+                        <User className="h-4 w-4" /> Profile: {profile?.first_name}
+                      </Button>
+                    </Link>
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-red-500" onClick={handleLogout}>
+                      <LogOut className="h-4 w-4" /> Log Out
                     </Button>
-                  </Link>
-                  <Link to="/profile" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full justify-start gap-2">
-                      <User className="h-4 w-4" /> Profile: {profile?.first_name}
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" className="w-full justify-start gap-2 text-red-500" onClick={handleLogout}>
-                    <LogOut className="h-4 w-4" /> Log Out
-                  </Button>
-                </>
-              ) : (
-                <div className="flex gap-2">
-                  <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
-                    <Button variant="outline" className="w-full" size="sm">Log In</Button>
-                  </Link>
-                  <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
-                    <Button className="w-full gradient-primary text-primary-foreground" size="sm">Register</Button>
-                  </Link>
-                </div>
+                  </>
+                ) : (
+                  <div className="flex gap-2">
+                    <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full" size="sm">Log In</Button>
+                    </Link>
+                    <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
+                      <Button className="w-full gradient-primary text-primary-foreground" size="sm">Register</Button>
+                    </Link>
+                  </div>
+                )
               )}
             </div>
           </nav>
@@ -157,5 +158,6 @@ const Header = () => {
     </header>
   );
 };
-
+ 
 export default Header;
+ 

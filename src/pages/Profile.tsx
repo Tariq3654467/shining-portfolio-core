@@ -13,8 +13,7 @@ import {
   Edit3, 
   CheckCircle2,
   Bell,
-  Camera,
-  Star
+  Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -240,6 +239,7 @@ const Profile = () => {
   );
 };
 
+// Simple Star Icon since we didn't import it
 const StarIcon = ({ className }: { className?: string }) => (
   <Star className={className} />
 );
