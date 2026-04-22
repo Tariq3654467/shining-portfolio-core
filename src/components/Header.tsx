@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Phone, Heart } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Phone, Heart, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -15,11 +16,24 @@ const navLinks = [
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    console.log("Logout button clicked in Header");
+    try {
+      await signOut();
+      console.log("SignOut successful, navigating to /login...");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout in Header:", error);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b">
       <div className="container flex items-center justify-between h-16">
-        {/* Top bar info */}
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <Heart className="h-7 w-7 text-primary fill-primary" />
           <span className="text-xl font-heading font-bold text-foreground">
@@ -44,20 +58,41 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* CTA */}
+        {/* CTA / User Menu */}
         <div className="hidden lg:flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
             <Phone className="h-4 w-4" />
             <span>+1 (530) 574-9007</span>
           </div>
-          <Link to="/login">
-            <Button variant="ghost" size="sm">Log In</Button>
-          </Link>
-          <Link to="/register">
-            <Button size="sm" className="gradient-primary text-primary-foreground">
-              Registration
-            </Button>
-          </Link>
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Link to="/dashboard">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <LayoutDashboard className="h-4 w-4" /> Dashboard
+                </Button>
+              </Link>
+              <Link to="/profile">
+                <Button variant="outline" size="sm" className="gap-2 border-primary/20 hover:bg-primary/5">
+                  <User className="h-4 w-4 text-primary" /> {profile?.first_name || "Profile"}
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleLogout} title="Logout">
+                <LogOut className="h-4 w-4 text-muted-foreground" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Log In</Button>
+              </Link>
+              <Link to="/register">
+                <Button size="sm" className="gradient-primary text-primary-foreground">
+                  Registration
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -87,13 +122,34 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
-            <div className="flex gap-2 mt-3 px-3">
-              <Link to="/login" className="flex-1">
-                <Button variant="outline" className="w-full" size="sm">Log In</Button>
-              </Link>
-              <Link to="/register" className="flex-1">
-                <Button className="w-full gradient-primary text-primary-foreground" size="sm">Register</Button>
-              </Link>
+            
+            <div className="flex flex-col gap-2 mt-3 px-3">
+              {user ? (
+                <>
+                  <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    </Button>
+                  </Link>
+                  <Link to="/profile" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <User className="h-4 w-4" /> Profile: {profile?.first_name}
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-red-500" onClick={handleLogout}>
+                    <LogOut className="h-4 w-4" /> Log Out
+                  </Button>
+                </>
+              ) : (
+                <div className="flex gap-2">
+                  <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full" size="sm">Log In</Button>
+                  </Link>
+                  <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button className="w-full gradient-primary text-primary-foreground" size="sm">Register</Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </nav>
         </div>

@@ -46,7 +46,7 @@ const Expectations = () => {
         <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground font-medium">
+        <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground font-medium">
           Skip
         </Link>
       </div>
@@ -90,7 +90,7 @@ const Expectations = () => {
           size="lg"
           className="w-full gradient-primary text-primary-foreground text-lg"
           disabled={selected.length === 0}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/dashboard")}
         >
           Continue
         </Button>
