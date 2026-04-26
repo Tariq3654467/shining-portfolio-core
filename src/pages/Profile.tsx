@@ -13,7 +13,8 @@ import {
   Edit3, 
   CheckCircle2,
   Bell,
-  Camera
+  Camera,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -222,7 +223,7 @@ const Profile = () => {
               {[
                 { title: "Privacy Settings", desc: "Control who sees your profile", icon: Shield, color: "text-blue-500" },
                 { title: "Notification Prefs", desc: "Manage your email alerts", icon: Bell, color: "text-purple-500" },
-                { title: "Upgrade Account", desc: "Unlock premium features", icon: StarIcon, color: "text-yellow-500" },
+                { title: "Upgrade Account", desc: "Unlock premium features", icon: Star, color: "text-yellow-500" },
               ].map((item, i) => (
                 <button key={i} className="bg-card border p-6 rounded-3xl shadow-sm text-left hover:shadow-lg hover:-translate-y-1 transition-all group">
                   <item.icon className={`h-8 w-8 ${item.color} mb-4 group-hover:scale-110 transition-transform`} />
@@ -239,9 +240,6 @@ const Profile = () => {
   );
 };
 
-// Simple Star Icon since we didn't import it
-const StarIcon = ({ className }: { className?: string }) => (
-  <Star className={className} />
-);
+
 
 export default Profile;

@@ -5,28 +5,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const expectations = [
-  { label: "Long term relationship", size: "lg" },
-  { label: "Vacation", size: "md" },
-  { label: "Romance", size: "md" },
-  { label: "Secret meetings", size: "sm" },
-  { label: "Start a family", size: "lg" },
-  { label: "Chat", size: "md" },
-  { label: "Friends with benefit", size: "md" },
-  { label: "Friends first", size: "md" },
-  { label: "Active partner", size: "lg" },
-  { label: "Casual dating", size: "md" },
-  { label: "Roleplay costumes", size: "md" },
-  { label: "Masculine only", size: "sm" },
-  { label: "BDSM", size: "sm" },
-  { label: "Experiments open", size: "sm" },
-  { label: "Sugar daddy", size: "sm" },
-  { label: "Don't know", size: "sm" },
+  { label: "Serious about marriage", size: "lg" },
+  { label: "Respect & understanding", size: "lg" },
+  { label: "Family values", size: "md" },
+  { label: "Honesty and trust", size: "md" },
+  { label: "Good communication", size: "lg" },
+  { label: "Education & career preference", size: "xl" },
+  { label: "Lifestyle choices", size: "md" },
+  { label: "Cultural / religious compatibility", size: "xl" },
+  { label: "Future goals alignment", size: "lg" },
+  { label: "Mutual growth and support", size: "lg" },
 ];
 
 const sizeMap = {
   sm: "w-20 h-20 text-xs",
   md: "w-24 h-24 text-xs",
   lg: "w-28 h-28 text-sm",
+  xl: "w-32 h-32 text-xs",
 };
 
 const Expectations = () => {
