@@ -35,8 +35,7 @@ const Index = () => {
         <div className="container relative z-10 grid lg:grid-cols-2 gap-10 py-20">
           <motion.div initial="hidden" animate="visible" className="flex flex-col justify-center">
             <motion.h1 variants={fadeUp} custom={0} className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground leading-tight">
-              Every Love Story is <span className="text-gradient-primary bg-clip-text" style={{ WebkitTextFillColor: "unset", color: "hsl(346, 90%, 70%)" }}>Beautiful</span>
-              <br />Make Yours Special
+              Find Life Partner <span className="text-gradient-primary bg-clip-text" style={{ WebkitTextFillColor: "unset", color: "hsl(346, 90%, 70%)" }}>Effortlessly</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={1} className="mt-4 text-lg text-primary-foreground/80 max-w-md">
               अब आफ्नो जीवनसाथी सजिलै खोज्नुहोस् – ebihe.com, तपाईंको आफ्नै नेपाली प्लेटफर्म।
@@ -130,7 +129,7 @@ const Index = () => {
       {/* Trusted by Millions */}
       <section className="py-20">
         <div className="container text-center">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold">Trusted by Millions</h2>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold">Trusted by our Verified Users</h2>
           <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
             Love is the foundation of every meaningful relationship, built on trust, respect, and understanding. At ebihe.com, we believe in helping you find a connection that lasts forever.
           </p>

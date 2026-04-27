@@ -142,7 +142,7 @@ const Profile = () => {
                           <h1 className="text-4xl font-heading font-bold text-foreground">
                             {profile?.first_name} {profile?.last_name}
                           </h1>
-                          <CheckCircle2 className="h-6 w-6 text-primary fill-primary/10" title="Verified Member" />
+                          <CheckCircle2 className="h-6 w-6 text-primary fill-primary/10" aria-label="Verified Member" />
                         </div>
                         <p className="text-lg text-muted-foreground flex items-center justify-center md:justify-start gap-2 mt-1">
                           <Mail className="h-4 w-4" /> {user.email}

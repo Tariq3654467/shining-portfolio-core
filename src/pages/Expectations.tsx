@@ -6,15 +6,17 @@ import { Button } from "@/components/ui/button";
 
 const expectations = [
   { label: "Serious about marriage", size: "lg" },
-  { label: "Respect & understanding", size: "lg" },
-  { label: "Family values", size: "md" },
-  { label: "Honesty and trust", size: "md" },
-  { label: "Good communication", size: "lg" },
-  { label: "Education & career preference", size: "xl" },
-  { label: "Lifestyle choices", size: "md" },
-  { label: "Cultural / religious compatibility", size: "xl" },
-  { label: "Future goals alignment", size: "lg" },
-  { label: "Mutual growth and support", size: "lg" },
+  { label: "Respect & Understanding", size: "lg" },
+  { label: "Family Values", size: "md" },
+  { label: "Honesty & Trust", size: "md" },
+  { label: "Good Communication", size: "lg" },
+  { label: "Education & Career Preferences", size: "xl" },
+  { label: "Lifestyle Compatibility", size: "md" },
+  { label: "Cultural & Religious Compatibility", size: "xl" },
+  { label: "Caste / Intercaste Preference", size: "lg" },
+  { label: "Location-Based Matching", size: "md" },
+  { label: "Shared Future Goals", size: "lg" },
+  { label: "Mutual Growth & Support", size: "lg" },
 ];
 
 const sizeMap = {
@@ -51,9 +53,12 @@ const Expectations = () => {
         <div className="h-full w-1/3 gradient-primary rounded-full" />
       </div>
 
-      <h1 className="text-2xl md:text-3xl font-heading font-bold text-center mb-8">
-        What are your expectations?
+      <h1 className="text-2xl md:text-3xl font-heading font-bold text-center mb-2">
+        Expectations from a Life Partner
       </h1>
+      <p className="text-sm text-muted-foreground text-center mb-8 max-w-md">
+        Pick what matters most to you in your future partner.
+      </p>
 
       {/* Bubble grid */}
       <div className="flex flex-wrap justify-center gap-3 max-w-lg mb-10">

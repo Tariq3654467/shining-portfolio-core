@@ -35,6 +35,12 @@ const Register = () => {
       return;
     }
 
+    const strongPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~';]).+$/;
+    if (!strongPassword.test(formData.password)) {
+      toast.error("Password must include one uppercase letter, one number, and one special character");
+      return;
+    }
+
     setLoading(true);
     
     try {
@@ -148,12 +154,15 @@ const Register = () => {
           />
           <Input 
             type="password" 
-            placeholder="Password (min 8 chars)" 
+            placeholder="Password" 
             required
             min={8}
             value={formData.password}
             onChange={(e) => updateFormData("password", e.target.value)}
           />
+          <p className="text-xs text-muted-foreground -mt-2">
+            Must be 8+ chars with one uppercase, one number, and one special character.
+          </p>
           <Input 
             type="password" 
             placeholder="Confirm Password" 
