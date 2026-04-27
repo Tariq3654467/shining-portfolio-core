@@ -49,7 +49,7 @@ const plans = [
       { text: "Unlimited Express Interests", included: true },
       { text: "Unlimited Photo Upload", included: true },
       { text: "Unlimited Contact View", included: true },
-      { text: "Priority Auto Match", included: true },
+      { text: "Priority Personalized Match", included: true },
     ],
   },
 ];

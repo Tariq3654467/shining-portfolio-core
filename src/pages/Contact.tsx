@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,6 @@ const Contact = () => (
               { icon: Phone, label: "Phone", value: "+1 (530) 574-9007" },
               { icon: Mail, label: "Email", value: "info@ebihe.com" },
               { icon: MapPin, label: "Address", value: "United States" },
-              { icon: Clock, label: "Hours", value: "Mon - Fri, 9AM - 6PM EST" },
             ].map((c) => (
               <div key={c.label} className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">

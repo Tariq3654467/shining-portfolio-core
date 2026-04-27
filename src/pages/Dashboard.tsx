@@ -66,7 +66,7 @@ const Dashboard = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <h1 className="text-3xl font-heading font-bold">
-                Assalamu Alaikum, {profile?.first_name || "Guest"}! 👋
+                Namaste, {profile?.first_name || "Guest"}! 🙏
               </h1>
               <p className="text-muted-foreground mt-1">
                 Here's what's happening with your search for a life partner today.
