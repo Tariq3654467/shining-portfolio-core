@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Phone, Heart, User, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, Phone, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import logo from "@/assets/logo.png";
  
 const navLinks = [
   { label: "Home", path: "/" },
@@ -32,7 +33,7 @@ const Header = () => {
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <Heart className="h-7 w-7 text-primary fill-primary" />
+          <img src={logo} alt="ebihe.com logo" className="h-10 w-10 object-contain" />
           <span className="text-xl font-heading font-bold text-foreground">
             ebihe<span className="text-primary">.com</span>
           </span>
