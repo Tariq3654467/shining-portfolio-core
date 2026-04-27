@@ -16,6 +16,8 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Expectations from "./pages/Expectations";
+import AdvancedSearch from "./pages/AdvancedSearch";
+import Biodata from "./pages/Biodata";
 import NotFound from "./pages/NotFound";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
@@ -60,6 +62,8 @@ const App = () => (
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/expectations" element={<Expectations />} />
+              <Route path="/search" element={<AdvancedSearch />} />
+              <Route path="/biodata" element={<ProtectedRoute><Biodata /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
