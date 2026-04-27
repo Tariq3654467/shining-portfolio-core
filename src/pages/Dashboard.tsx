@@ -76,6 +76,11 @@ const Dashboard = () => {
               <Button variant="outline" size="icon" className="rounded-full shadow-sm">
                 <Bell className="h-5 w-5" />
               </Button>
+              <Link to="/biodata">
+                <Button variant="outline" className="gap-2 hidden sm:inline-flex">
+                  Complete Biodata
+                </Button>
+              </Link>
               <Link to="/profile">
                 <Button className="gradient-primary text-primary-foreground gap-2">
                   <Settings className="h-4 w-4" /> Edit Profile
