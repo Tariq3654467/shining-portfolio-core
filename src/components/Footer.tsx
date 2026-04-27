@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Heart, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => (
   <footer className="bg-foreground text-background/80">
@@ -7,7 +8,7 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="h-6 w-6 text-primary fill-primary" />
+            <img src={logo} alt="ebihe.com logo" className="h-9 w-9 object-contain" />
             <span className="text-lg font-heading font-bold text-background">
               ebihe<span className="text-primary">.com</span>
             </span>
