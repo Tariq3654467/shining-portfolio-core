@@ -1,13 +1,13 @@
 # Shining Portfolio Core - ebihe.com Dating Platform
 
-## 🚀 Quick Start
+##  Quick Start
 
 ```bash
 npm install
 npm run dev
 ```
 
-## 🔧 Supabase Setup (REQUIRED for Login/Logout/Profile)
+## Supabase Setup (REQUIRED for Login/Logout/Profile)
 
 ### 1. Create Supabase Project
 ```
