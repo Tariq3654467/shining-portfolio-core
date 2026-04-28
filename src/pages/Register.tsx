@@ -12,10 +12,10 @@ import { toast } from "sonner";
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
     firstName: "",
     lastName: "",
     gender: "",
@@ -26,11 +26,6 @@ const Register = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
     if (formData.password.length < 8) {
       toast.error("Password must be at least 8 characters");
       return;
