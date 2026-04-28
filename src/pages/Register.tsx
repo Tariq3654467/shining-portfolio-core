@@ -148,24 +148,28 @@ const Register = () => {
             value={formData.email}
             onChange={(e) => updateFormData("email", e.target.value)}
           />
-          <Input 
-            type="password" 
-            placeholder="Password" 
-            required
-            min={8}
-            value={formData.password}
-            onChange={(e) => updateFormData("password", e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              required
+              min={8}
+              value={formData.password}
+              onChange={(e) => updateFormData("password", e.target.value)}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
           <p className="text-xs text-muted-foreground -mt-2">
             Must be 8+ chars with one uppercase, one number, and one special character.
           </p>
-          <Input 
-            type="password" 
-            placeholder="Confirm Password" 
-            required
-            value={formData.confirmPassword}
-            onChange={(e) => updateFormData("confirmPassword", e.target.value)}
-          />
 
           <p className="text-xs text-muted-foreground">
             By signing up you agree to our <Link to="/" className="text-primary underline">terms and conditions</Link>.
