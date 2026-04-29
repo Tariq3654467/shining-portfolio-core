@@ -131,20 +131,22 @@ const Biodata = () => {
     setSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("biodatas").upsert({
-          user_id: user.id,
-          payload: data,
-          private_fields: privateFields,
-          updated_at: new Date().toISOString(),
-        });
+      if (!user) {
+        toast.error("You must be logged in to save biodata");
+        navigate("/login");
+        return;
       }
+      const { error } = await supabase.from("biodatas").upsert({
+        user_id: user.id,
+        payload: data,
+        private_fields: privateFields,
+        updated_at: new Date().toISOString(),
+      });
+      if (error) throw error;
       toast.success("Biodata saved successfully!");
       navigate("/dashboard");
     } catch (e: any) {
-      // Even if backend isn't ready, let user proceed
-      toast.success("Biodata captured!");
-      navigate("/dashboard");
+      toast.error(e.message || "Failed to save biodata. Please try again.");
     } finally {
       setSubmitting(false);
     }
