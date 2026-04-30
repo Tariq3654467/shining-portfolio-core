@@ -7,6 +7,7 @@ import logo from "@/assets/logo.png";
  
 const navLinks = [
   { label: "Home", path: "/" },
+  { label: "Features", path: "/features" },
   { label: "Active Members", path: "/active-members" },
   { label: "Search", path: "/search" },
   { label: "Premium Plans", path: "/premium-plans" },
@@ -72,6 +73,11 @@ const Header = () => {
                     <LayoutDashboard className="h-4 w-4" /> Dashboard
                   </Button>
                 </Link>
+                <Link to="/verification">
+                  <Button variant="outline" size="sm" className="gap-2 border-primary/20 hover:bg-primary/5">
+                    <User className="h-4 w-4 text-primary" /> Verify
+                  </Button>
+                </Link>
                 <Link to="/profile">
                   <Button variant="outline" size="sm" className="gap-2 border-primary/20 hover:bg-primary/5">
                     <User className="h-4 w-4 text-primary" /> {profile?.first_name || "Profile"}
@@ -131,6 +137,11 @@ const Header = () => {
                     <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
                       <Button variant="outline" className="w-full justify-start gap-2">
                         <LayoutDashboard className="h-4 w-4" /> Dashboard
+                      </Button>
+                    </Link>
+                    <Link to="/verification" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full justify-start gap-2">
+                        <User className="h-4 w-4" /> Verify Account
                       </Button>
                     </Link>
                     <Link to="/profile" onClick={() => setMobileOpen(false)}>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader as Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,11 +14,68 @@ import { toast } from "sonner";
 type Field = {
   key: string;
   label: string;
-  type?: "text" | "number" | "date" | "textarea" | "select";
+  type?: "text" | "number" | "date" | "textarea" | "select" | "number-range";
   options?: string[];
   optional?: boolean;
   privateToggle?: boolean;
+  allowManualEntry?: boolean;
 };
+
+const CASTE_OPTIONS = [
+  "Chhetri",
+  "Bahun / Hill Brahmin",
+  "Thakuri",
+  "Sanyasi / Dashnami",
+  "Bishwakarma (Kami)",
+  "Pariyar (Damai/Dholi)",
+  "Mijar (Sarki)",
+  "Magar",
+  "Gurung",
+  "Ghale",
+  "Tamang",
+  "Chepang / Praja",
+  "Jirel",
+  "Rai",
+  "Limbu",
+  "Sunuwar",
+  "Sherpa",
+  "Bhote",
+  "Thakali",
+  "Tharu",
+  "Danuwar",
+  "Rajbanshi",
+  "Santhal",
+  "Dhimal",
+  "Newar Brahmins (Rajopadhyaya)",
+  "Shrestha (Kshatriya)",
+  "Uray groups",
+  "Jyapu groups",
+  "Maithil Brahmin",
+  "Rajput",
+  "Kayastha",
+  "Kushwaha/Koiri",
+  "Yadav",
+  "Teli",
+  "Sudi",
+  "Kurmi",
+  "Bania/Kalwar",
+  "Halwai",
+  "Mallah",
+  "Mali",
+  "Rajbhar",
+  "Chamar",
+  "Dhanuk",
+  "Dom",
+  "Musahar",
+  "Tatma",
+  "Terai Muslims",
+  "Hill Muslims (Churaute)",
+  "Marwadi",
+  "Bengali",
+  "Punjabi/Sikh",
+  "Other",
+  "Prefer not to say"
+];
 
 const steps: { title: string; description: string; fields: Field[] }[] = [
   {
@@ -28,10 +85,12 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
       { key: "fullName", label: "Full Name" },
       { key: "gender", label: "Gender", type: "select", options: ["Male", "Female"] },
       { key: "dob", label: "Date of Birth", type: "date" },
-      { key: "height", label: "Height", type: "select", options: ["< 5'0\"","5'0\"","5'2\"","5'4\"","5'6\"","5'8\"","5'10\"","6'0\"","6'2\"","> 6'2\""] },
+      { key: "age", label: "Age", type: "number", allowManualEntry: true },
+      { key: "height", label: "Height (e.g., 5'8\" or cm)", type: "text", allowManualEntry: true },
       { key: "maritalStatus", label: "Marital Status", type: "select", options: ["Never Married", "Divorced", "Widowed"] },
       { key: "religion", label: "Religion", type: "select", options: ["Hindu", "Buddhist", "Christian", "Muslim", "Other"] },
-      { key: "caste", label: "Caste / Ethnicity", type: "select", options: ["Brahmin","Chettri","Newar","Tamang","Magar","Gurung","Other","Prefer not to say"], privateToggle: true, optional: true },
+      { key: "caste", label: "Caste / Ethnicity", type: "select", options: CASTE_OPTIONS, privateToggle: true, optional: true },
+      { key: "casteOther", label: "If Other, please specify", type: "text", optional: true },
       { key: "intercaste", label: "Intercaste Preference", type: "select", options: ["Yes", "No", "Open"] },
       { key: "motherTongue", label: "Mother Tongue", type: "select", options: ["Nepali","Newari","Maithili","Hindi","English","Other"] },
       { key: "nationality", label: "Nationality", type: "select", options: ["Nepali","Indian","American","British","Australian","Other"] },
@@ -41,10 +100,10 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
     title: "Location Details",
     description: "Where are you based?",
     fields: [
-      { key: "currentAddress", label: "Current Address" },
-      { key: "permanentAddress", label: "Permanent Address" },
       { key: "country", label: "Country", type: "select", options: ["Nepal","India","USA","UK","Australia","Canada","Other"] },
-      { key: "city", label: "City" },
+      { key: "areaOfResidence", label: "Area of Residence (City/District)" },
+      { key: "currentAddress", label: "Current Address", optional: true },
+      { key: "permanentAddress", label: "Permanent Address", optional: true },
       { key: "relocate", label: "Willing to Relocate", type: "select", options: ["Yes","No","Maybe"] },
     ],
   },

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Briefcase, GraduationCap, Filter, X } from "lucide-react";
+import { MapPin, Briefcase, GraduationCap, ListFilter as Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,11 +20,16 @@ const allMembers = [
   { id: 8, name: "Rajan B.", age: 34, height: 182, location: "Kathmandu", country: "Nepal", profession: "Entrepreneur", education: "Bachelors", religion: "Buddhist", caste: "Gurung", maritalStatus: "Never Married", gender: "Male" },
 ];
 
-const educationLevels = ["Any", "Bachelors", "Masters", "Doctorate"];
+const educationLevels = ["Any", "High School", "Bachelors", "Masters", "Doctorate"];
 const religions = ["Any", "Hindu", "Buddhist", "Christian", "Muslim", "Other"];
 const maritalStatuses = ["Any", "Never Married", "Divorced", "Widowed"];
-const countries = ["Any", "Nepal", "USA", "UK", "Australia", "Canada"];
-const castes = ["Any", "Brahmin", "Chettri", "Newar", "Tamang", "Magar", "Gurung", "Other"];
+const countries = ["Any", "Nepal", "India", "USA", "UK", "Australia", "Canada"];
+const locations = ["Any", "Kathmandu", "Pokhara", "Biratnagar", "Chitwan", "Dharan", "Janakpur", "Birgunj", "Bhaktapur", "Lalitpur"];
+const castes = [
+  "Any", "Chhetri", "Bahun/Hill Brahmin", "Thakuri", "Magar", "Gurung", "Ghale", "Tamang",
+  "Chepang", "Rai", "Limbu", "Sunuwar", "Sherpa", "Bhote", "Thakali", "Tharu", "Rajbanshi",
+  "Newar Brahmins", "Shrestha", "Maithil Brahmin", "Rajput", "Kayastha", "Yadav", "Other"
+];
 
 const AdvancedSearch = () => {
   const [keyword, setKeyword] = useState("");
@@ -35,6 +40,7 @@ const AdvancedSearch = () => {
   const [religion, setReligion] = useState("Any");
   const [marital, setMarital] = useState("Any");
   const [country, setCountry] = useState("Any");
+  const [location, setLocation] = useState("Any");
   const [caste, setCaste] = useState("Any");
 
   const filtered = useMemo(() => {
@@ -47,14 +53,15 @@ const AdvancedSearch = () => {
       if (religion !== "Any" && m.religion !== religion) return false;
       if (marital !== "Any" && m.maritalStatus !== marital) return false;
       if (country !== "Any" && m.country !== country) return false;
+      if (location !== "Any" && m.location !== location) return false;
       if (caste !== "Any" && m.caste !== caste) return false;
       return true;
     });
-  }, [keyword, gender, ageRange, heightRange, education, religion, marital, country, caste]);
+  }, [keyword, gender, ageRange, heightRange, education, religion, marital, country, location, caste]);
 
   const reset = () => {
     setKeyword(""); setGender("Any"); setAgeRange([21, 40]); setHeightRange([150, 195]);
-    setEducation("Any"); setReligion("Any"); setMarital("Any"); setCountry("Any"); setCaste("Any");
+    setEducation("Any"); setReligion("Any"); setMarital("Any"); setCountry("Any"); setLocation("Any"); setCaste("Any");
   };
 
   const activeFilters = [
@@ -63,6 +70,7 @@ const AdvancedSearch = () => {
     religion !== "Any" && `Religion: ${religion}`,
     marital !== "Any" && `Status: ${marital}`,
     country !== "Any" && `Country: ${country}`,
+    location !== "Any" && `Location: ${location}`,
     caste !== "Any" && `Caste: ${caste}`,
   ].filter(Boolean) as string[];
 
@@ -98,6 +106,7 @@ const AdvancedSearch = () => {
         { label: "Religion", value: religion, setter: setReligion, options: religions },
         { label: "Marital Status", value: marital, setter: setMarital, options: maritalStatuses },
         { label: "Country", value: country, setter: setCountry, options: countries },
+        { label: "Area of Residence", value: location, setter: setLocation, options: locations },
         { label: "Caste / Ethnicity", value: caste, setter: setCaste, options: castes },
       ].map((f) => (
         <div key={f.label}>

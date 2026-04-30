@@ -18,6 +18,9 @@ import Dashboard from "./pages/Dashboard";
 import Expectations from "./pages/Expectations";
 import AdvancedSearch from "./pages/AdvancedSearch";
 import Biodata from "./pages/Biodata";
+import BioDataReview from "./pages/BioDataReview";
+import Verification from "./pages/Verification";
+import Features from "./pages/Features";
 import NotFound from "./pages/NotFound";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
@@ -64,6 +67,9 @@ const App = () => (
               <Route path="/expectations" element={<Expectations />} />
               <Route path="/search" element={<AdvancedSearch />} />
               <Route path="/biodata" element={<ProtectedRoute><Biodata /></ProtectedRoute>} />
+              <Route path="/biodata-review" element={<ProtectedRoute><BioDataReview /></ProtectedRoute>} />
+              <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
+              <Route path="/features" element={<Features />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
