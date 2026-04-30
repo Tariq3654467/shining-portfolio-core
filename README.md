@@ -38,9 +38,6 @@ VITE_SUPABASE_ANON_KEY=your_long_anon_key_here
 npx supabase init
 npx supabase db push
 
-# Option B: Dashboard SQL Editor
-Paste supabase/migrations/schema.sql
-```
 
 ### 5. Create Profiles Table + RLS (if missing)
 ```sql
