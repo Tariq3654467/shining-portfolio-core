@@ -227,13 +227,35 @@ const Biodata = () => {
         navigate("/login");
         return;
       }
-      const { error } = await supabase.from("biodatas").upsert({
+
+      const { data: existingBiodata } = await supabase
+        .from("biodatas")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      const bioDataPayload = {
         user_id: user.id,
         payload: data,
         private_fields: privateFields,
         profile_picture_url: profilePictureUrl,
         updated_at: new Date().toISOString(),
-      });
+      };
+
+      let error;
+      if (existingBiodata) {
+        const result = await supabase
+          .from("biodatas")
+          .update(bioDataPayload)
+          .eq("user_id", user.id);
+        error = result.error;
+      } else {
+        const result = await supabase
+          .from("biodatas")
+          .insert(bioDataPayload);
+        error = result.error;
+      }
+
       if (error) throw error;
       toast.success("Biodata saved successfully!");
       navigate("/dashboard");
