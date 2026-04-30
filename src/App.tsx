@@ -21,6 +21,7 @@ import Biodata from "./pages/Biodata";
 import BioDataReview from "./pages/BioDataReview";
 import Verification from "./pages/Verification";
 import Features from "./pages/Features";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/biodata-review" element={<ProtectedRoute><BioDataReview /></ProtectedRoute>} />
               <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
               <Route path="/features" element={<Features />} />
+              <Route path="/success" element={<PaymentSuccess />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>

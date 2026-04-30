@@ -4,7 +4,12 @@ import { Check, X, Star, CreditCard, Smartphone, Building2, ArrowRight } from "l
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "react-router-dom";
+import StripeCheckout from "@/components/StripeCheckout";
+import PayPalCheckout from "@/components/PayPalCheckout";
+import MobilePaymentCheckout from "@/components/MobilePaymentCheckout";
+import BankTransferCheckout from "@/components/BankTransferCheckout";
 
 const plans = [
   {
@@ -82,6 +87,73 @@ const paymentMethods = [
   },
 ];
 
+const PaymentMethodSelector = ({
+  plan,
+  planName,
+}: {
+  plan: "silver" | "gold" | "platinum";
+  planName: string;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button
+        onClick={() => setOpen(true)}
+        className="w-full gradient-primary text-primary-foreground"
+      >
+        Subscribe Now
+      </Button>
+
+      {open && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Choose Payment Method</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Tabs defaultValue="international" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="international">International</TabsTrigger>
+                  <TabsTrigger value="local">Local Payment</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="international" className="space-y-3">
+                  <StripeCheckout plan={plan} planName={planName} />
+                  <PayPalCheckout plan={plan} planName={planName} />
+                </TabsContent>
+
+                <TabsContent value="local" className="space-y-3">
+                  <MobilePaymentCheckout
+                    plan={plan}
+                    provider="esewa"
+                    providerName="eSewa"
+                  />
+                  <MobilePaymentCheckout
+                    plan={plan}
+                    provider="khalti"
+                    providerName="Khalti"
+                  />
+                  <MobilePaymentCheckout
+                    plan={plan}
+                    provider="ime-pay"
+                    providerName="IME Pay"
+                  />
+                  <BankTransferCheckout plan={plan} />
+                </TabsContent>
+              </Tabs>
+
+              <Button variant="outline" className="w-full" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </>
+  );
+};
+
 const PremiumPlans = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -142,13 +214,20 @@ const PremiumPlans = () => {
                   </li>
                 ))}
               </ul>
-              <Button
-                onClick={() => handlePurchase(plan.name)}
-                className={`w-full ${plan.popular ? "gradient-primary text-primary-foreground" : ""}`}
-                variant={plan.popular ? "default" : "outline"}
-              >
-                {plan.price === "Free" ? "Get Started" : "Subscribe Now"}
-              </Button>
+              {plan.price === "Free" ? (
+                <Button
+                  onClick={() => navigate("/biodata")}
+                  className={`w-full ${plan.popular ? "gradient-primary text-primary-foreground" : ""}`}
+                  variant={plan.popular ? "default" : "outline"}
+                >
+                  Get Started
+                </Button>
+              ) : (
+                <PaymentMethodSelector
+                  plan={plan.name.toLowerCase() as "silver" | "gold" | "platinum"}
+                  planName={plan.name}
+                />
+              )}
             </motion.div>
           ))}
         </div>

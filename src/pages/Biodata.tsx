@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader as Loader2 } from "lucide-react";
@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 
 type Field = {
   key: string;
@@ -159,6 +160,37 @@ const Biodata = () => {
   const [data, setData] = useState<Record<string, string>>({});
   const [privateFields, setPrivateFields] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [profilePictureUrl, setProfilePictureUrl] = useState("");
+
+  useEffect(() => {
+    const loadExistingBiodata = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUser(user);
+          const { data: biodata } = await supabase
+            .from("biodatas")
+            .select("*")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          if (biodata) {
+            setData(biodata.payload || {});
+            setPrivateFields(biodata.private_fields || {});
+            setProfilePictureUrl(biodata.profile_picture_url || "");
+            setStep(steps.length - 1);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load biodata:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadExistingBiodata();
+  }, []);
 
   const current = steps[step];
   const progress = ((step + 1) / steps.length) * 100;
@@ -199,6 +231,7 @@ const Biodata = () => {
         user_id: user.id,
         payload: data,
         private_fields: privateFields,
+        profile_picture_url: profilePictureUrl,
         updated_at: new Date().toISOString(),
       });
       if (error) throw error;
@@ -246,6 +279,17 @@ const Biodata = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-[80vh] py-8 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading your biodata...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[80vh] py-8 px-4">
       <div className="max-w-2xl mx-auto">
@@ -275,6 +319,18 @@ const Biodata = () => {
           >
             <h2 className="text-xl font-heading font-semibold">{current.title}</h2>
             <p className="text-sm text-muted-foreground mb-6">{current.description}</p>
+
+            {step === 0 && user && (
+              <div className="mb-8 pb-8 border-b">
+                <p className="text-sm font-medium mb-4">Profile Picture</p>
+                <ProfilePictureUpload
+                  userId={user.id}
+                  currentImageUrl={profilePictureUrl}
+                  onImageUpload={setProfilePictureUrl}
+                  displayName={data.fullName || "User"}
+                />
+              </div>
+            )}
 
             <div className="grid sm:grid-cols-2 gap-4">
               {current.fields.map((f) => (
