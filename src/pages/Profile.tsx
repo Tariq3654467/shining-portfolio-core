@@ -1,34 +1,85 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { 
-  User, 
-  LogOut, 
-  Calendar, 
-  Mail, 
-  UserCircle, 
-  Briefcase, 
-  Settings, 
-  Shield, 
-  CreditCard, 
-  Edit3, 
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import {
+  User,
+  LogOut,
+  Calendar,
+  Mail,
+  UserCircle,
+  Briefcase,
+  Settings,
+  Shield,
+  CreditCard,
+  Edit3,
   CheckCircle2,
   Bell,
   Camera,
-  Star
+  Star,
+  Heart,
+  Search,
+  FileText,
+  Lock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
+
+interface BioDataInfo {
+  fullName?: string;
+  gender?: string;
+  dob?: string;
+  age?: string;
+  height?: string;
+  religion?: string;
+  caste?: string;
+  areaOfResidence?: string;
+  profile_picture_url?: string;
+}
 
 const Profile = () => {
   const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const [biodata, setBiodata] = useState<BioDataInfo | null>(null);
+  const [biodataLoading, setBiodataLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBiodata = async () => {
+      try {
+        if (user) {
+          const { data } = await supabase
+            .from("biodatas")
+            .select("payload, profile_picture_url")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          if (data) {
+            setBiodata({
+              ...data.payload,
+              profile_picture_url: data.profile_picture_url,
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch biodata:", e);
+      } finally {
+        setBiodataLoading(false);
+      }
+    };
+
+    if (user && !loading) {
+      fetchBiodata();
+    }
+  }, [user, loading]);
 
   const handleLogout = async () => {
     await signOut();
     navigate("/login");
   };
 
-  if (loading) {
+  if (loading || biodataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30">
         <div className="flex flex-col items-center gap-4">
@@ -62,11 +113,12 @@ const Profile = () => {
   }
 
   const sidebarLinks = [
-    { label: "My Profile", icon: User, active: true },
-    { label: "Account Settings", icon: Settings, active: false },
-    { label: "Membership", icon: CreditCard, active: false },
-    { label: "Privacy & Security", icon: Shield, active: false },
-    { label: "Notifications", icon: Bell, active: false },
+    { label: "My Profile", icon: User, action: () => {}, active: true },
+    { label: "View Biodata", icon: FileText, action: () => navigate("/biodata-review"), active: false },
+    { label: "Edit Biodata", icon: Edit3, action: () => navigate("/biodata"), active: false },
+    { label: "Browse Profiles", icon: Search, action: () => navigate("/search"), active: false },
+    { label: "Verify Account", icon: Lock, action: () => navigate("/verification"), active: false },
+    { label: "Account Settings", icon: Settings, action: () => {}, active: false },
   ];
 
   return (
@@ -80,10 +132,10 @@ const Profile = () => {
 
       <div className="container px-4 -mt-32 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* Sidebar */}
           <div className="lg:col-span-3">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="bg-card/80 backdrop-blur-xl border rounded-3xl p-4 shadow-xl sticky top-24"
@@ -92,9 +144,10 @@ const Profile = () => {
                 {sidebarLinks.map((link) => (
                   <button
                     key={link.label}
+                    onClick={link.action}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all ${
-                      link.active 
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                      link.active
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
@@ -103,7 +156,7 @@ const Profile = () => {
                   </button>
                 ))}
                 <div className="pt-4 mt-4 border-t px-2">
-                  <button 
+                  <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-red-500 hover:bg-red-50 transition-all"
                   >
@@ -126,10 +179,20 @@ const Profile = () => {
                 <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
                   {/* Profile Image Area */}
                   <div className="relative group">
-                    <div className="h-32 w-32 md:h-40 md:w-40 rounded-3xl bg-muted border-4 border-background shadow-2xl overflow-hidden flex items-center justify-center text-primary group-hover:scale-105 transition-transform duration-300">
-                      <UserCircle className="h-24 w-24 md:h-32 md:w-32 opacity-20" />
-                    </div>
-                    <button className="absolute -bottom-2 -right-2 p-3 bg-primary text-primary-foreground rounded-2xl shadow-xl hover:scale-110 active:scale-95 transition-all">
+                    <Avatar className="h-40 w-40 border-4 border-background shadow-2xl">
+                      <AvatarImage
+                        src={biodata?.profile_picture_url}
+                        alt={biodata?.fullName || "Profile"}
+                      />
+                      <AvatarFallback className="text-2xl">
+                        {(biodata?.fullName || "U")[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <button
+                      onClick={() => navigate("/biodata")}
+                      className="absolute -bottom-2 -right-2 p-3 bg-primary text-primary-foreground rounded-2xl shadow-xl hover:scale-110 active:scale-95 transition-all"
+                      title="Update profile picture"
+                    >
                       <Camera className="h-5 w-5" />
                     </button>
                   </div>
@@ -140,7 +203,7 @@ const Profile = () => {
                       <div>
                         <div className="flex items-center gap-2 justify-center md:justify-start">
                           <h1 className="text-4xl font-heading font-bold text-foreground">
-                            {profile?.first_name} {profile?.last_name}
+                            {biodata?.fullName || profile?.first_name || "User"}
                           </h1>
                           <CheckCircle2 className="h-6 w-6 text-primary fill-primary/10" aria-label="Verified Member" />
                         </div>
@@ -148,14 +211,18 @@ const Profile = () => {
                           <Mail className="h-4 w-4" /> {user.email}
                         </p>
                       </div>
-                      <Button variant="outline" className="rounded-2xl gap-2 h-12 px-6 border-primary/20 hover:bg-primary/5">
+                      <Button
+                        onClick={() => navigate("/biodata")}
+                        variant="outline"
+                        className="rounded-2xl gap-2 h-12 px-6 border-primary/20 hover:bg-primary/5"
+                      >
                         <Edit3 className="h-4 w-4 text-primary" /> Edit Profile
                       </Button>
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-2 pt-2 justify-center md:justify-start">
                       <span className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                        Premium Member
+                        Member
                       </span>
                       <span className="px-4 py-1.5 rounded-full bg-green-500/10 text-green-600 text-xs font-bold uppercase tracking-wider">
                         Verified
@@ -172,19 +239,24 @@ const Profile = () => {
                     </h3>
                     <div className="grid grid-cols-1 gap-4">
                       <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
-                        <span className="text-muted-foreground font-medium">Account Owner</span>
-                        <span className="font-bold capitalize">{profile?.on_behalf || "Self"}</span>
-                      </div>
-                      <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
                         <span className="text-muted-foreground font-medium">Gender</span>
-                        <span className="font-bold capitalize">{profile?.gender || "Not specified"}</span>
+                        <span className="font-bold capitalize">{biodata?.gender || profile?.gender || "Not specified"}</span>
                       </div>
                       <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
-                        <span className="text-muted-foreground font-medium">Date of Birth</span>
-                        <div className="flex items-center gap-2 font-bold">
-                          <Calendar className="h-4 w-4 text-primary" />
-                          <span>{profile?.date_of_birth || "1994-01-01"}</span>
-                        </div>
+                        <span className="text-muted-foreground font-medium">Age</span>
+                        <span className="font-bold">{biodata?.age || "Not specified"}</span>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
+                        <span className="text-muted-foreground font-medium">Height</span>
+                        <span className="font-bold">{biodata?.height || "Not specified"}</span>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
+                        <span className="text-muted-foreground font-medium">Religion</span>
+                        <span className="font-bold capitalize">{biodata?.religion || "Not specified"}</span>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
+                        <span className="text-muted-foreground font-medium">Caste</span>
+                        <span className="font-bold capitalize">{biodata?.caste || "Not specified"}</span>
                       </div>
                     </div>
                   </div>
@@ -200,12 +272,16 @@ const Profile = () => {
                         <span className="font-bold">{new Date(user.created_at).toLocaleDateString()}</span>
                       </div>
                       <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
-                        <span className="text-muted-foreground font-medium">Last Login</span>
-                        <span className="font-bold">Today</span>
+                        <span className="text-muted-foreground font-medium">Area</span>
+                        <span className="font-bold">{biodata?.areaOfResidence || "Not specified"}</span>
                       </div>
                       <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
                         <span className="text-muted-foreground font-medium">Profile Status</span>
                         <span className="font-bold text-green-500">Active</span>
+                      </div>
+                      <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
+                        <span className="text-muted-foreground font-medium">Biodata</span>
+                        <span className="font-bold text-blue-500">{biodata ? "Complete" : "Incomplete"}</span>
                       </div>
                     </div>
                   </div>
@@ -218,14 +294,19 @@ const Profile = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+              className="grid grid-cols-1 md:grid-cols-4 gap-4"
             >
               {[
-                { title: "Privacy Settings", desc: "Control who sees your profile", icon: Shield, color: "text-blue-500" },
-                { title: "Notification Prefs", desc: "Manage your email alerts", icon: Bell, color: "text-purple-500" },
-                { title: "Upgrade Account", desc: "Unlock premium features", icon: Star, color: "text-yellow-500" },
+                { title: "Browse Profiles", desc: "Find your match", icon: Search, color: "text-blue-500", action: () => navigate("/search") },
+                { title: "Likes & Interests", desc: "View your connections", icon: Heart, color: "text-red-500", action: () => navigate("/search") },
+                { title: "Verify Account", desc: "Get verified badge", icon: Shield, color: "text-purple-500", action: () => navigate("/verification") },
+                { title: "Upgrade Plan", desc: "Get premium access", icon: Star, color: "text-yellow-500", action: () => navigate("/premium-plans") },
               ].map((item, i) => (
-                <button key={i} className="bg-card border p-6 rounded-3xl shadow-sm text-left hover:shadow-lg hover:-translate-y-1 transition-all group">
+                <button
+                  key={i}
+                  onClick={item.action}
+                  className="bg-card border p-6 rounded-3xl shadow-sm text-left hover:shadow-lg hover:-translate-y-1 transition-all group"
+                >
                   <item.icon className={`h-8 w-8 ${item.color} mb-4 group-hover:scale-110 transition-transform`} />
                   <h4 className="font-bold mb-1">{item.title}</h4>
                   <p className="text-xs text-muted-foreground">{item.desc}</p>
@@ -239,7 +320,5 @@ const Profile = () => {
     </div>
   );
 };
-
-
 
 export default Profile;
