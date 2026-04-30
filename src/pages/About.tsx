@@ -16,9 +16,9 @@ const About = () => (
   <div className="py-16">
     <div className="container max-w-4xl">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-        <h1 className="text-3xl md:text-4xl font-heading font-bold">About ebihe.com</h1>
+        <h1 className="text-3xl md:text-4xl font-heading font-bold">About eBihe.com</h1>
         <p className="text-muted-foreground mt-4 max-w-2xl mx-auto leading-relaxed">
-          ebihe.com is a trusted matrimonial platform dedicated to helping Nepali individuals find meaningful, compatible life partners for marriage. We combine tradition with technology to create genuine, secure, and lasting connections.
+          eBihe.com is a trusted matrimonial platform dedicated to helping Nepali individuals find meaningful, compatible life partners for marriage. We combine tradition with technology to create genuine, secure, and lasting connections.
         </p>
       </motion.div>
 

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { UserPlus, Search, MessageCircle, Shield, Heart, CheckCircle, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { UserPlus, Search, MessageCircle, Shield, Heart, CircleCheck as CheckCircle, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,8 +21,8 @@ const Index = () => {
   const [storyIdx, setStoryIdx] = useState(0);
 
   const stories = [
-    { img: couple1, names: "Arun & Priya", text: "We found each other on ebihe.com and knew it was meant to be. Thank you for making our dream come true!" },
-    { img: couple2, names: "Raj & Sita", text: "ebihe.com helped us connect across continents. Now we are happily married and grateful every day." },
+    { img: couple1, names: "Arun & Priya", text: "We found each other on eBihe.com and knew it was meant to be. Thank you for making our dream come true!" },
+    { img: couple2, names: "Raj & Sita", text: "eBihe.com helped us connect across continents. Now we are happily married and grateful every day." },
     { img: couple3, names: "Kiran & Anita", text: "The platform made finding my life partner so simple. We are now building a beautiful life together." },
   ];
 
@@ -38,7 +38,7 @@ const Index = () => {
               Find Life Partner <span className="text-gradient-primary bg-clip-text" style={{ WebkitTextFillColor: "unset", color: "hsl(346, 90%, 70%)" }}>Effortlessly</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={1} className="mt-4 text-lg text-primary-foreground/80 max-w-md">
-              अब आफ्नो जीवनसाथी सजिलै खोज्नुहोस् – ebihe.com, तपाईंको आफ्नै नेपाली प्लेटफर्म।
+              अब आफ्नो जीवनसाथी सजिलै खोज्नुहोस् – eBihe.com, तपाईंको आफ्नै नेपाली प्लेटफर्म।
             </motion.p>
             <motion.div variants={fadeUp} custom={2} className="mt-6">
               <Link to="/register">
@@ -131,7 +131,7 @@ const Index = () => {
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-heading font-bold">Trusted by our Verified Users</h2>
           <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
-            Love is the foundation of every meaningful relationship, built on trust, respect, and understanding. At ebihe.com, we believe in helping you find a connection that lasts forever.
+            Love is the foundation of every meaningful relationship, built on trust, respect, and understanding. At eBihe.com, we believe in helping you find a connection that lasts forever.
           </p>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             {[

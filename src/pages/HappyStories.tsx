@@ -5,8 +5,8 @@ import couple2 from "@/assets/happy-couple-2.jpg";
 import couple3 from "@/assets/happy-couple-3.jpg";
 
 const stories = [
-  { img: couple1, names: "Arun & Priya", location: "Kathmandu, Nepal", text: "We found each other on ebihe.com and knew it was meant to be. The platform made the entire process feel natural and respectful. Thank you for making our dream come true!", date: "Married in 2024" },
-  { img: couple2, names: "Raj & Sita", location: "New York, USA", text: "ebihe.com helped us connect across continents. Despite the distance, the platform made communication so easy. Now we are happily married and grateful every day.", date: "Married in 2023" },
+  { img: couple1, names: "Arun & Priya", location: "Kathmandu, Nepal", text: "We found each other on eBihe.com and knew it was meant to be. The platform made the entire process feel natural and respectful. Thank you for making our dream come true!", date: "Married in 2024" },
+  { img: couple2, names: "Raj & Sita", location: "New York, USA", text: "eBihe.com helped us connect across continents. Despite the distance, the platform made communication so easy. Now we are happily married and grateful every day.", date: "Married in 2023" },
   { img: couple3, names: "Kiran & Anita", location: "London, UK", text: "The platform made finding my life partner so simple. The verified profiles gave us confidence, and we connected on a deeper level right from the start.", date: "Married in 2024" },
 ];
 
@@ -15,7 +15,7 @@ const HappyStories = () => (
     <div className="container">
       <h1 className="text-3xl md:text-4xl font-heading font-bold text-center">Happy Stories</h1>
       <p className="text-muted-foreground text-center mt-2 mb-12 max-w-lg mx-auto">
-        Real couples who found their soulmates through ebihe.com
+        Real couples who found their soulmates through eBihe.com
       </p>
 
       <div className="space-y-12">

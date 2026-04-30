@@ -34,9 +34,9 @@ const Header = () => {
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="ebihe.com logo" className="h-10 w-10 object-contain" />
+          <img src={logo} alt="eBihe.com logo" className="h-10 w-10 object-contain" />
           <span className="text-xl font-heading font-bold text-foreground">
-            ebihe<span className="text-primary">.com</span>
+            eBihe<span className="text-primary">.com</span>
           </span>
         </Link>
  

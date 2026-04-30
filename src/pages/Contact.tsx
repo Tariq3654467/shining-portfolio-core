@@ -16,7 +16,7 @@ const Contact = () => (
           <div className="space-y-5">
             {[
               { icon: Phone, label: "Phone", value: "+1 (530) 574-9007" },
-              { icon: Mail, label: "Email", value: "info@ebihe.com" },
+              { icon: Mail, label: "Email", value: "info@eBihe.com" },
               { icon: MapPin, label: "Address", value: "United States" },
             ].map((c) => (
               <div key={c.label} className="flex items-start gap-4">

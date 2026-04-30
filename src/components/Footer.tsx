@@ -8,9 +8,9 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <img src={logo} alt="ebihe.com logo" className="h-9 w-9 object-contain" />
+            <img src={logo} alt="eBihe.com logo" className="h-9 w-9 object-contain" />
             <span className="text-lg font-heading font-bold text-background">
-              ebihe<span className="text-primary">.com</span>
+              eBihe<span className="text-primary">.com</span>
             </span>
           </div>
           <p className="text-sm leading-relaxed text-background/60">
@@ -47,7 +47,7 @@ const Footer = () => (
             </div>
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-primary" />
-              <span>info@ebihe.com</span>
+              <span>info@eBihe.com</span>
             </div>
             <div className="flex items-start gap-2">
               <MapPin className="h-4 w-4 text-primary mt-0.5" />
@@ -58,7 +58,7 @@ const Footer = () => (
       </div>
 
       <div className="border-t border-background/10 mt-8 pt-6 text-center text-sm text-background/40">
-        © {new Date().getFullYear()} ebihe.com. All rights reserved.
+        © {new Date().getFullYear()} eBihe.com. All rights reserved.
       </div>
     </div>
   </footer>
