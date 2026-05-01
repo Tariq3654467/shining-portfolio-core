@@ -90,7 +90,7 @@ const Features = () => {
       <div className="container max-w-5xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold">How BiheNepal Works</h1>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold">How eBihe.com Works</h1>
           <p className="text-xl text-muted-foreground mt-4">
             A complete guide to finding your perfect match
           </p>

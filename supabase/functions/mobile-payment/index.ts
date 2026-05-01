@@ -70,7 +70,7 @@ async function initiateKhaltiPayment(plan: string, userId: string, amount: numbe
       product_identity: `BIHE-${userId}-${Date.now()}`,
       product_name: planDetails[plan].name,
       product_url: `${Deno.env.get("VITE_APP_URL") || "http://localhost:5173"}/premium-plans`,
-      merchant_name: "BiheNepal",
+      merchant_name: "eBihe.com",
       return_url: `${Deno.env.get("VITE_APP_URL") || "http://localhost:5173"}/payment-success?provider=khalti&plan=${plan}`,
     },
   };
@@ -85,7 +85,7 @@ async function initiateIMEPayPayment(plan: string, userId: string, amount: numbe
       amount: amount,
       transaction_id: `BIHE-${userId}-${Date.now()}`,
       product_name: planDetails[plan].name,
-      merchant_name: "BiheNepal",
+      merchant_name: "eBihe.com",
       merchant_code: "BIHE",
       success_url: successUrl,
       failure_url: `${Deno.env.get("VITE_APP_URL") || "http://localhost:5173"}/premium-plans`,

@@ -251,7 +251,7 @@ const PremiumPlans = () => {
                           if (method.name === "PayPal") {
                             alert(`Redirecting to PayPal payment for ${selectedPlan} plan...`);
                           } else if (method.name === "Bank Transfer") {
-                            alert("Bank transfer details:\nAccount: BiheNepal\nBank: Nepal Bank Limited\nAccount No: 1234567890");
+                            alert("Bank transfer details:\nAccount: eBihe.com\nBank: Nepal Bank Limited\nAccount No: 1234567890");
                           } else {
                             alert("Mobile Payment Options:\n- eSewa\n- Khalti\n- IME Pay\n\nContact support for payment details.");
                           }
@@ -310,7 +310,7 @@ const PremiumPlans = () => {
 
         {/* Benefits */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-16 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-12 text-center">
-          <h2 className="text-2xl font-heading font-bold mb-4">Why Choose BiheNepal Premium?</h2>
+          <h2 className="text-2xl font-heading font-bold mb-4">Why Choose eBihe.com Premium?</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             Get access to advanced matching, unlimited views, and connect with verified members to find your perfect life partner.
           </p>

@@ -17,7 +17,7 @@ const BankTransferCheckout = ({ plan }: BankTransferCheckoutProps) => {
 
   const bankDetails = {
     bankName: "Nepal Bank Limited",
-    accountName: "BiheNepal Matrimony Pvt. Ltd.",
+    accountName: "eBihe.com Matrimony Pvt. Ltd.",
     accountNumber: "1234567890",
     swiftCode: "NBLTNTKA",
     branch: "Kathmandu Branch",
