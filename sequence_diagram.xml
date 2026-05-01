@@ -1,0 +1,83 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Lane Detection Activity">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+```
+    <!-- Start -->
+    <mxCell id="start" value="Start" style="ellipse;" vertex="1" parent="1">
+      <mxGeometry x="300" y="20" width="80" height="40" as="geometry"/>
+    </mxCell>
+
+    <!-- Steps -->
+    <mxCell id="step1" value="Open Camera Screen" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="80" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="step2" value="Initialize CameraX" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="150" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="step3" value="Capture Frame" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="220" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="step4" value="Preprocess Frame" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="290" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="step5" value="YOLOv8n Inference (ONNX)" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="360" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="step6" value="Extract Lane Polygons" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="430" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="step7" value="Compute Curvature & Offset" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="500" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Decision -->
+    <mxCell id="decision" value="Offset > Threshold?" style="rhombus;" vertex="1" parent="1">
+      <mxGeometry x="250" y="570" width="180" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- Warning -->
+    <mxCell id="warn" value="Trigger Warning" style="rounded=1;fillColor=#f8cecc;" vertex="1" parent="1">
+      <mxGeometry x="500" y="580" width="180" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- UI -->
+    <mxCell id="ui" value="Render Overlay & Metrics" style="rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="250" y="680" width="200" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Loop -->
+    <mxCell id="loop" value="Next Frame" style="ellipse;" vertex="1" parent="1">
+      <mxGeometry x="300" y="760" width="120" height="40" as="geometry"/>
+    </mxCell>
+
+    <!-- Connections -->
+    <mxCell id="e1" edge="1" source="start" target="step1" parent="1"/>
+    <mxCell id="e2" edge="1" source="step1" target="step2" parent="1"/>
+    <mxCell id="e3" edge="1" source="step2" target="step3" parent="1"/>
+    <mxCell id="e4" edge="1" source="step3" target="step4" parent="1"/>
+    <mxCell id="e5" edge="1" source="step4" target="step5" parent="1"/>
+    <mxCell id="e6" edge="1" source="step5" target="step6" parent="1"/>
+    <mxCell id="e7" edge="1" source="step6" target="step7" parent="1"/>
+    <mxCell id="e8" edge="1" source="step7" target="decision" parent="1"/>
+    <mxCell id="e9" edge="1" source="decision" target="warn" parent="1" value="Yes"/>
+    <mxCell id="e10" edge="1" source="decision" target="ui" parent="1" value="No"/>
+    <mxCell id="e11" edge="1" source="warn" target="ui" parent="1"/>
+    <mxCell id="e12" edge="1" source="ui" target="loop" parent="1"/>
+    <mxCell id="e13" edge="1" source="loop" target="step3" parent="1"/>
+
+  </root>
+</mxGraphModel>
+```
+
+  </diagram>
+</mxfile>
