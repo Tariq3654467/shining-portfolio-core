@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CreditCard as Edit, Check, Eye, EyeOff } from "lucide-react";
+import { CreditCard as Edit, Check, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 type BioData = {
@@ -88,9 +88,23 @@ const BioDataReview = () => {
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-heading font-bold">Your Biodata</h1>
-          <p className="text-muted-foreground mt-2">Review and edit your profile information</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-heading font-bold">Your Biodata</h1>
+              <p className="text-muted-foreground mt-2">Review and edit your profile information</p>
+            </div>
+            <Button onClick={() => navigate("/biodata")} className="gradient-primary text-primary-foreground gap-2 md:w-auto w-full">
+              <Edit className="h-4 w-4" /> Edit Profile
+            </Button>
+          </div>
+
+          <div className="bg-accent/50 border border-accent rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <p className="text-sm text-foreground">
+              You can edit any section of your biodata. Click the <span className="font-semibold">Edit Profile</span> button to make changes.
+            </p>
+          </div>
         </motion.div>
 
         <div className="grid gap-6 mb-8">
@@ -133,9 +147,6 @@ const BioDataReview = () => {
         <div className="flex gap-3 justify-center">
           <Button variant="outline" onClick={() => navigate("/dashboard")}>
             <Check className="h-4 w-4 mr-2" /> Back to Dashboard
-          </Button>
-          <Button onClick={() => navigate("/biodata")} className="gradient-primary text-primary-foreground">
-            <Edit className="h-4 w-4 mr-2" /> Edit Biodata
           </Button>
         </div>
       </div>
