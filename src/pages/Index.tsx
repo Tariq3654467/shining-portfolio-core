@@ -4,11 +4,12 @@ import { UserPlus, Search, MessageCircle, Shield, Heart, CircleCheck as CheckCir
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import heroImage from "@/assets/hero-couple.jpg";
-import couple1 from "@/assets/happy-couple-1.jpg";
-import couple2 from "@/assets/happy-couple-2.jpg";
-import couple3 from "@/assets/happy-couple-3.jpg";
-import { useState } from "react";
+// Using Pexels stock photos for demonstration
+const heroImage = "https://images.pexels.com/photos/3957987/pexels-photo-3957987.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
+const couple1 = "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
+const couple2 = "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
+const couple3 = "https://images.pexels.com/photos/1183622/pexels-photo-1183622.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const fadeUp = {
@@ -19,6 +20,14 @@ const fadeUp = {
 const Index = () => {
   const navigate = useNavigate();
   const [storyIdx, setStoryIdx] = useState(0);
+  const [heroIdx, setHeroIdx] = useState(0);
+
+  const heroSlides = [
+    { img: heroImage, alt: "Happy couple" },
+    { img: couple1, alt: "Arun & Priya" },
+    { img: couple2, alt: "Raj & Sita" },
+    { img: couple3, alt: "Kiran & Anita" },
+  ];
 
   const stories = [
     { img: couple1, names: "Arun & Priya", text: "We found each other on eBihe.com and knew it was meant to be. Thank you for making our dream come true!" },
@@ -26,12 +35,64 @@ const Index = () => {
     { img: couple3, names: "Kiran & Anita", text: "The platform made finding my life partner so simple. We are now building a beautiful life together." },
   ];
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroIdx((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
+
   return (
     <>
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        <img src={heroImage} alt="Happy couple" className="absolute inset-0 w-full h-full object-cover" width={1920} height={1080} />
+        <div className="absolute inset-0 overflow-hidden">
+          {heroSlides.map((slide, idx) => (
+            <motion.img
+              key={idx}
+              src={slide.img}
+              alt={slide.alt}
+              className="absolute inset-0 w-full h-full object-cover"
+              width={1920}
+              height={1080}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: idx === heroIdx ? 1 : 0 }}
+              transition={{ duration: 1 }}
+            />
+          ))}
+        </div>
         <div className="absolute inset-0 gradient-hero-overlay" />
+
+        {/* Slide Navigation */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {heroSlides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setHeroIdx(idx)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === heroIdx ? "w-8 bg-primary" : "w-2 bg-white/50 hover:bg-white/70"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Slide Controls */}
+        <button
+          onClick={() => setHeroIdx((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-colors"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          onClick={() => setHeroIdx((prev) => (prev + 1) % heroSlides.length)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-colors"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+
         <div className="container relative z-10 grid lg:grid-cols-2 gap-10 py-20">
           <motion.div initial="hidden" animate="visible" className="flex flex-col justify-center">
             <motion.h1 variants={fadeUp} custom={0} className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground leading-tight">

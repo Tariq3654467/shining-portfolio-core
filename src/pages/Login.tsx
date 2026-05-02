@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Loader as Loader2, Phone, Mail } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { Loader as Loader2, Phone, Mail, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -89,7 +88,9 @@ const Login = () => {
         className="w-full max-w-md bg-card border rounded-2xl p-8"
       >
         <div className="text-center mb-6">
-          <img src={logo} alt="eBihe.com logo" className="h-14 w-14 object-contain mx-auto mb-3" />
+          <div className="h-14 w-14 mx-auto mb-3 rounded-full bg-gradient-primary flex items-center justify-center">
+            <Heart className="h-7 w-7 text-white" />
+          </div>
           <h1 className="text-2xl font-heading font-bold">Welcome Back</h1>
           <p className="text-sm text-muted-foreground">Log in to your eBihe.com account</p>
         </div>

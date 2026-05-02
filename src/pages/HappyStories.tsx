@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
-import couple1 from "@/assets/happy-couple-1.jpg";
-import couple2 from "@/assets/happy-couple-2.jpg";
-import couple3 from "@/assets/happy-couple-3.jpg";
+
+const couple1 = "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
+const couple2 = "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
+const couple3 = "https://images.pexels.com/photos/1183622/pexels-photo-1183622.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
 
 const stories = [
   { img: couple1, names: "Arun & Priya", location: "Kathmandu, Nepal", text: "We found each other on eBihe.com and knew it was meant to be. The platform made the entire process feel natural and respectful. Thank you for making our dream come true!", date: "Married in 2024" },
