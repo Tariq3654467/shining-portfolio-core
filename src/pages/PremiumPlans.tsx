@@ -53,9 +53,10 @@ const plans = [
   },
   {
     name: "Platinum",
-    price: "Rs 2000",
-    period: "/month",
+    price: "Custom",
+    period: "pricing",
     popular: false,
+    isContact: true,
     features: [
       { text: "Unlimited Express Interests", included: true },
       { text: "Unlimited Photo Upload", included: true },
@@ -199,8 +200,20 @@ const PremiumPlans = () => {
               )}
               <h3 className="font-heading font-bold text-xl">{plan.name}</h3>
               <div className="mt-4 mb-6">
-                <span className="text-3xl font-heading font-bold">{plan.price}</span>
-                <span className="text-muted-foreground text-sm ml-1">{plan.period}</span>
+                {(plan as any).isContact ? (
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-heading font-bold">Rs 2000</span>
+                      <span className="line-through text-muted-foreground/50 text-sm">base price</span>
+                    </div>
+                    <p className="text-xs text-primary font-semibold">Contact for custom pricing</p>
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-3xl font-heading font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground text-sm ml-1">{plan.period}</span>
+                  </>
+                )}
               </div>
               <ul className="space-y-3 flex-1 mb-6">
                 {plan.features.map((f) => (
@@ -222,6 +235,12 @@ const PremiumPlans = () => {
                 >
                   Get Started
                 </Button>
+              ) : (plan as any).isContact ? (
+                <Link to="/contact">
+                  <Button className="w-full gradient-primary text-primary-foreground">
+                    Contact Us
+                  </Button>
+                </Link>
               ) : (
                 <PaymentMethodSelector
                   plan={plan.name.toLowerCase() as "silver" | "gold" | "platinum"}
@@ -319,6 +338,16 @@ const PremiumPlans = () => {
               Start Your Journey <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </Link>
+        </motion.div>
+
+        {/* Terms & Conditions Link */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mt-12 text-center">
+          <p className="text-sm text-muted-foreground">
+            By subscribing, you agree to our{" "}
+            <Link to="/terms-conditions" className="text-primary hover:underline font-medium">
+              Terms & Conditions
+            </Link>
+          </p>
         </motion.div>
       </div>
     </div>

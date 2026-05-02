@@ -8,6 +8,7 @@ import Layout from "@/components/Layout";
 import Index from "./pages/Index";
 import ActiveMembers from "./pages/ActiveMembers";
 import PremiumPlans from "./pages/PremiumPlans";
+import TermsConditions from "./pages/TermsConditions";
 import HappyStories from "./pages/HappyStories";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/active-members" element={<ActiveMembers />} />
               <Route path="/premium-plans" element={<PremiumPlans />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
               <Route path="/happy-stories" element={<HappyStories />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
