@@ -3,6 +3,7 @@ import { MapPin, Briefcase, GraduationCap, ListFilter as Filter, X } from "lucid
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 
 const members = [
@@ -16,15 +17,24 @@ const members = [
 
 const ActiveMembers = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [selectedGender, setSelectedGender] = useState("all");
-  const [selectedLocation, setSelectedLocation] = useState("all");
+  const [keyword, setKeyword] = useState("");
+  const [lookingFor, setLookingFor] = useState("any");
+  const [ageRange, setAgeRange] = useState([21, 32]);
+  const [heightRange, setHeightRange] = useState([150, 195]);
+  const [education, setEducation] = useState("any");
+  const [religion, setReligion] = useState("any");
+  const [maritalStatus, setMaritalStatus] = useState("any");
 
   const filteredMembers = members.filter(m => {
-    const matchesSearch = m.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesGender = selectedGender === "all" || m.gender.toLowerCase() === selectedGender;
-    const matchesLocation = selectedLocation === "all" || m.location.toLowerCase() === selectedLocation.toLowerCase();
-    return matchesSearch && matchesGender && matchesLocation;
+    const matchesKeyword = keyword === "" ||
+      m.name.toLowerCase().includes(keyword.toLowerCase()) ||
+      m.profession.toLowerCase().includes(keyword.toLowerCase());
+
+    const matchesLookingFor = lookingFor === "any" || m.gender.toLowerCase() === lookingFor.toLowerCase();
+    const matchesAge = m.age >= ageRange[0] && m.age <= ageRange[1];
+    const matchesEducation = education === "any" || m.education.toLowerCase().includes(education.toLowerCase());
+
+    return matchesKeyword && matchesLookingFor && matchesAge && matchesEducation;
   });
 
   const filterOptions = [
@@ -43,7 +53,7 @@ const ActiveMembers = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
           {/* Sidebar */}
           <div className={`lg:col-span-1 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
-            <div className="bg-card rounded-xl border p-4 space-y-4">
+            <div className="bg-card rounded-xl border p-4 space-y-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-heading font-semibold flex items-center gap-2">
                   <Filter className="h-4 w-4" /> Filters
@@ -53,58 +63,112 @@ const ActiveMembers = () => {
                 </button>
               </div>
 
-              <div className="space-y-2">
-                {filterOptions.map(option => (
-                  <button
-                    key={option.value}
-                    className="w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent"
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="pt-4 border-t">
-                <h4 className="text-xs font-semibold text-muted-foreground mb-2">SEARCH</h4>
+              {/* Keyword Search */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Keyword</label>
                 <Input
-                  placeholder="Search by name"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
+                  placeholder="Name or profession"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
                   className="text-sm"
                 />
+              </div>
+
+              {/* Looking For */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Looking for</label>
+                <Select value={lookingFor} onValueChange={setLookingFor}>
+                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Age Range */}
+              <div>
+                <label className="text-sm font-medium mb-3 block">Age: {ageRange[0]} – {ageRange[1]}</label>
+                <Slider
+                  min={18}
+                  max={60}
+                  step={1}
+                  value={ageRange}
+                  onValueChange={setAgeRange}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Height Range */}
+              <div>
+                <label className="text-sm font-medium mb-3 block">Height (cm): {heightRange[0]} – {heightRange[1]}</label>
+                <Slider
+                  min={140}
+                  max={210}
+                  step={1}
+                  value={heightRange}
+                  onValueChange={setHeightRange}
+                  className="w-full mb-1"
+                />
+                <p className="text-xs text-muted-foreground">Include inches as well</p>
+              </div>
+
+              {/* Education */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Education</label>
+                <Select value={education} onValueChange={setEducation}>
+                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="bachelor">Bachelor's</SelectItem>
+                    <SelectItem value="master">Master's</SelectItem>
+                    <SelectItem value="doctorate">Doctorate</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Religion */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Religion</label>
+                <Select value={religion} onValueChange={setReligion}>
+                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="hindu">Hindu</SelectItem>
+                    <SelectItem value="muslim">Muslim</SelectItem>
+                    <SelectItem value="christian">Christian</SelectItem>
+                    <SelectItem value="buddhist">Buddhist</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Marital Status */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Marital Status</label>
+                <Select value={maritalStatus} onValueChange={setMaritalStatus}>
+                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="never">Never Married</SelectItem>
+                    <SelectItem value="divorced">Divorced</SelectItem>
+                    <SelectItem value="widowed">Widowed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            {/* Top Filter Bar */}
-            <div className="bg-card rounded-xl border p-4 mb-8 flex flex-wrap gap-3">
-              <Input
-                placeholder="Search by name..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="flex-1 min-w-[200px]"
-              />
-              <Select value={selectedGender} onValueChange={setSelectedGender}>
-                <SelectTrigger className="w-40"><SelectValue placeholder="Gender" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className="w-40"><SelectValue placeholder="Location" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="kathmandu">Kathmandu</SelectItem>
-                  <SelectItem value="pokhara">Pokhara</SelectItem>
-                  <SelectItem value="usa">USA</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button className="lg:hidden" variant="outline" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                <Filter className="h-4 w-4 mr-1" /> Filters
+            {/* Mobile Filter Toggle */}
+            <div className="lg:hidden mb-6">
+              <Button
+                variant="outline"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="w-full"
+              >
+                <Filter className="h-4 w-4 mr-2" /> Show Filters
               </Button>
             </div>
 
