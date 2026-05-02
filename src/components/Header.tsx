@@ -8,7 +8,7 @@ const navLinks = [
   { label: "Home", path: "/" },
   { label: "Features", path: "/features" },
   { label: "Active Members", path: "/active-members" },
-  { label: "Search", path: "/search" },
+  { label: "Advanced Search", path: "/advanced-search" },
   { label: "Premium Plans", path: "/premium-plans" },
   { label: "Happy Stories", path: "/happy-stories" },
   { label: "About", path: "/about" },

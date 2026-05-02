@@ -23,7 +23,15 @@ const allMembers = [
 const educationLevels = ["Any", "High School", "Bachelors", "Masters", "Doctorate"];
 const religions = ["Any", "Hindu", "Buddhist", "Christian", "Muslim", "Other"];
 const maritalStatuses = ["Any", "Never Married", "Divorced", "Widowed"];
-const countries = ["Any", "Nepal", "India", "USA", "UK", "Australia", "Canada"];
+const countries = [
+  "Any", "Nepal", "India", "USA", "UK", "Australia", "Canada", "Germany", "France", "Italy",
+  "Spain", "Netherlands", "Belgium", "Switzerland", "Sweden", "Norway", "Denmark", "Finland",
+  "Poland", "Czech Republic", "Austria", "Portugal", "Greece", "Japan", "South Korea", "China",
+  "Thailand", "Malaysia", "Singapore", "Philippines", "Indonesia", "Vietnam", "Pakistan",
+  "Bangladesh", "Sri Lanka", "UAE", "Saudi Arabia", "Qatar", "Oman", "Kuwait", "Bahrain",
+  "South Africa", "Egypt", "Nigeria", "Kenya", "Brazil", "Mexico", "Argentina", "Chile",
+  "New Zealand", "Ireland", "Iceland", "Turkey", "Russia", "Ukraine", "Hong Kong"
+];
 const locations = ["Any", "Kathmandu", "Pokhara", "Biratnagar", "Chitwan", "Dharan", "Janakpur", "Birgunj", "Bhaktapur", "Lalitpur"];
 const castes = [
   "Any", "Chhetri", "Bahun/Hill Brahmin", "Thakuri", "Magar", "Gurung", "Ghale", "Tamang",

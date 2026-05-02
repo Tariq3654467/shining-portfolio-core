@@ -67,6 +67,7 @@ const App = () => (
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/expectations" element={<Expectations />} />
               <Route path="/search" element={<AdvancedSearch />} />
+              <Route path="/advanced-search" element={<AdvancedSearch />} />
               <Route path="/biodata" element={<ProtectedRoute><Biodata /></ProtectedRoute>} />
               <Route path="/biodata-review" element={<ProtectedRoute><BioDataReview /></ProtectedRoute>} />
               <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />

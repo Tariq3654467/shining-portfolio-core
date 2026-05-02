@@ -7,12 +7,20 @@ import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 
 const members = [
-  { id: 1, name: "Aarav S.", age: 28, location: "Kathmandu", profession: "Software Engineer", education: "M.Tech", gender: "Male" },
-  { id: 2, name: "Priya M.", age: 25, location: "Pokhara", profession: "Doctor", education: "MBBS", gender: "Female" },
-  { id: 3, name: "Rohan K.", age: 30, location: "New York", profession: "Business Analyst", education: "MBA", gender: "Male" },
-  { id: 4, name: "Sita R.", age: 26, location: "London", profession: "Architect", education: "B.Arch", gender: "Female" },
-  { id: 5, name: "Bikash T.", age: 32, location: "Sydney", profession: "Civil Engineer", education: "B.E.", gender: "Male" },
-  { id: 6, name: "Anita G.", age: 27, location: "Kathmandu", profession: "Teacher", education: "M.Ed", gender: "Female" },
+  { id: 1, name: "Aarav S.", age: 28, location: "Kathmandu", country: "Nepal", profession: "Software Engineer", education: "M.Tech", gender: "Male" },
+  { id: 2, name: "Priya M.", age: 25, location: "Pokhara", country: "Nepal", profession: "Doctor", education: "MBBS", gender: "Female" },
+  { id: 3, name: "Rohan K.", age: 30, location: "New York", country: "USA", profession: "Business Analyst", education: "MBA", gender: "Male" },
+  { id: 4, name: "Sita R.", age: 26, location: "London", country: "UK", profession: "Architect", education: "B.Arch", gender: "Female" },
+  { id: 5, name: "Bikash T.", age: 32, location: "Sydney", country: "Australia", profession: "Civil Engineer", education: "B.E.", gender: "Male" },
+  { id: 6, name: "Anita G.", age: 27, location: "Kathmandu", country: "Nepal", profession: "Teacher", education: "M.Ed", gender: "Female" },
+];
+
+const countries = [
+  "Any", "Nepal", "India", "USA", "UK", "Australia", "Canada", "Germany", "France", "Italy",
+  "Spain", "Netherlands", "Belgium", "Switzerland", "Sweden", "Norway", "Denmark", "Finland",
+  "Poland", "Czech Republic", "Austria", "Portugal", "Greece", "Japan", "South Korea", "China",
+  "Thailand", "Malaysia", "Singapore", "Philippines", "Indonesia", "Vietnam", "Pakistan",
+  "Bangladesh", "Sri Lanka", "UAE", "Saudi Arabia", "Qatar", "New Zealand", "Ireland"
 ];
 
 const ActiveMembers = () => {
@@ -24,6 +32,7 @@ const ActiveMembers = () => {
   const [education, setEducation] = useState("any");
   const [religion, setReligion] = useState("any");
   const [maritalStatus, setMaritalStatus] = useState("any");
+  const [country, setCountry] = useState("any");
 
   const filteredMembers = members.filter(m => {
     const matchesKeyword = keyword === "" ||
@@ -33,9 +42,21 @@ const ActiveMembers = () => {
     const matchesLookingFor = lookingFor === "any" || m.gender.toLowerCase() === lookingFor.toLowerCase();
     const matchesAge = m.age >= ageRange[0] && m.age <= ageRange[1];
     const matchesEducation = education === "any" || m.education.toLowerCase().includes(education.toLowerCase());
+    const matchesCountry = country === "any" || m.country.toLowerCase() === country.toLowerCase();
 
-    return matchesKeyword && matchesLookingFor && matchesAge && matchesEducation;
+    return matchesKeyword && matchesLookingFor && matchesAge && matchesEducation && matchesCountry;
   });
+
+  const resetFilters = () => {
+    setKeyword("");
+    setLookingFor("any");
+    setAgeRange([21, 32]);
+    setHeightRange([150, 195]);
+    setEducation("any");
+    setReligion("any");
+    setMaritalStatus("any");
+    setCountry("any");
+  };
 
   const filterOptions = [
     { label: "All", value: "all" },
@@ -156,6 +177,26 @@ const ActiveMembers = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Country */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Country</label>
+                <Select value={country} onValueChange={setCountry}>
+                  <SelectTrigger className="text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {countries.map((c) => (
+                      <SelectItem key={c} value={c.toLowerCase()}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Reset Button */}
+              <Button variant="outline" className="w-full text-sm" onClick={resetFilters}>
+                Reset All Filters
+              </Button>
             </div>
           </div>
 
@@ -191,7 +232,7 @@ const ActiveMembers = () => {
                     <div className="p-5">
                       <h3 className="text-lg font-heading font-semibold">{m.name}, <span className="text-muted-foreground font-body text-base">{m.age}</span></h3>
                       <div className="flex flex-col gap-1.5 mt-3 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{m.location}</span>
+                        <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{m.location}, {m.country}</span>
                         <span className="flex items-center gap-1.5"><Briefcase className="h-3.5 w-3.5" />{m.profession}</span>
                         <span className="flex items-center gap-1.5"><GraduationCap className="h-3.5 w-3.5" />{m.education}</span>
                       </div>
