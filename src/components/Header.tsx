@@ -32,7 +32,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b">
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
           <div className="h-10 w-10 rounded-full bg-gradient-primary flex items-center justify-center">
             <Heart className="h-6 w-6 text-white" />
           </div>
@@ -40,9 +40,9 @@ const Header = () => {
             eBihe<span className="text-primary">.com</span>
           </span>
         </Link>
- 
+
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1 mx-8">
           {navLinks.map((link) => (
             <Link
               key={link.path}
