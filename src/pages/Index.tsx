@@ -4,8 +4,8 @@ import { UserPlus, Search, MessageCircle, Shield, Heart, CircleCheck as CheckCir
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Using Pexels stock photos for demonstration
-const heroImage = "https://images.pexels.com/photos/3957987/pexels-photo-3957987.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
+// Using the project hero image asset
+const heroImage = "/image.png";
 const couple1 = "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
 const couple2 = "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
 const couple3 = "https://images.pexels.com/photos/1183622/pexels-photo-1183622.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";

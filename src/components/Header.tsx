@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Phone, User, LogOut, LayoutDashboard, Heart } from "lucide-react";
+import { Menu, X, Phone, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
  
@@ -30,13 +30,15 @@ const Header = () => {
  
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b">
-      <div className="container flex items-center justify-between h-16">
+      <div className="container flex items-center justify-between h-16 gap-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="h-10 w-10 rounded-full bg-gradient-primary flex items-center justify-center">
-            <Heart className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-xl font-heading font-bold text-foreground">
+          <img
+            src="/logo-DwV78GLE.png"
+            alt="eBihe logo"
+            className="h-10 w-10 rounded-full object-cover border border-primary/20"
+          />
+          <span className="text-lg md:text-xl font-heading font-bold text-foreground leading-none">
             eBihe<span className="text-primary">.com</span>
           </span>
         </Link>
@@ -59,13 +61,11 @@ const Header = () => {
         </nav>
  
         {/* CTA / User Menu */}
-        <div className="hidden lg:flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
+        <div className="hidden lg:flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2 min-w-0">
             <Phone className="h-4 w-4" />
-            <span>+1 (530) 574-9007</span>
+            <span className="break-words whitespace-normal max-w-[10rem]">+1 (530) 574-9007</span>
           </div>
- 
-          {/* FIX: Don't render auth buttons until loading is done to prevent flicker */}
           {!loading && (
             user ? (
               <div className="flex items-center gap-2">

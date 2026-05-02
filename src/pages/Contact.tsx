@@ -19,13 +19,13 @@ const Contact = () => (
               { icon: Mail, label: "Email", value: "info@eBihe.com" },
               { icon: MapPin, label: "Address", value: "United States" },
             ].map((c) => (
-              <div key={c.label} className="flex items-start gap-4">
+              <div key={c.label} className="flex items-start gap-4 min-w-0">
                 <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                   <c.icon className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{c.label}</p>
-                  <p className="font-medium">{c.value}</p>
+                  <p className="font-medium break-words whitespace-normal max-w-[16rem]">{c.value}</p>
                 </div>
               </div>
             ))}

@@ -42,9 +42,9 @@ const Footer = () => (
         <div>
           <h4 className="font-heading font-semibold text-background mb-4">Contact</h4>
           <div className="flex flex-col gap-3 text-sm">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <Phone className="h-4 w-4 text-primary" />
-              <span>+1 (530) 574-9007</span>
+              <span className="break-words whitespace-normal max-w-[10rem]">+1 (530) 574-9007</span>
             </div>
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-primary" />

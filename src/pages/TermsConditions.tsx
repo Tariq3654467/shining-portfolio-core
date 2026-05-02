@@ -64,8 +64,8 @@ const TermsConditions = () => {
             </p>
             <ul className="space-y-2 text-muted-foreground ml-6 list-disc">
               <li><strong>Free Plan:</strong> Free for 30 days with limited features</li>
-              <li><strong>Silver Plan:</strong> Rs 500/month for enhanced features</li>
-              <li><strong>Gold Plan:</strong> Rs 1000/month for premium features</li>
+              <li><strong>Silver Plan:</strong> $5/month for enhanced features</li>
+              <li><strong>Gold Plan:</strong> $10/month for premium features</li>
               <li><strong>Platinum & Custom Plans:</strong> Contact us for custom pricing and requirements</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">

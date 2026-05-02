@@ -91,7 +91,7 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
       { key: "maritalStatus", label: "Marital Status", type: "select", options: ["Never Married", "Divorced", "Widowed"] },
       { key: "religion", label: "Religion", type: "select", options: ["Hindu", "Buddhist", "Christian", "Muslim", "Other"] },
       { key: "caste", label: "Caste / Ethnicity", type: "select", options: CASTE_OPTIONS, privateToggle: true, optional: true },
-      { key: "casteOther", label: "If Other, please specify", type: "text", optional: true },
+      { key: "casteOther", label: "Please specify", type: "text", optional: true },
       { key: "intercaste", label: "Intercaste Preference", type: "select", options: ["Yes", "No", "Open"] },
       { key: "motherTongue", label: "Mother Tongue", type: "select", options: ["Nepali","Newari","Maithili","Hindi","English","Other"] },
       { key: "nationality", label: "Nationality", type: "select", options: ["Nepali","Indian","American","British","Australian","Other"] },
@@ -136,21 +136,21 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
     description: "What you're looking for",
     fields: [
       { key: "prefAge", label: "Preferred Age Range", type: "select", options: ["18-24","22-28","25-32","28-35","32-40","40+","Other"] },
-      { key: "prefAgeOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefAgeOther", label: "Please specify", type: "text", optional: true },
       { key: "prefHeight", label: "Preferred Height", type: "select", options: ["< 5'0\"","5'0\" – 5'4\"","5'4\" – 5'8\"","5'8\" – 6'0\"","6'0\"+","No Preference","Other"] },
-      { key: "prefHeightOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefHeightOther", label: "Please specify", type: "text", optional: true },
       { key: "prefEducation", label: "Education Preference", type: "select", options: ["Bachelors+","Masters+","Doctorate","No Preference","Other"] },
-      { key: "prefEducationOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefEducationOther", label: "Please specify", type: "text", optional: true },
       { key: "prefCareer", label: "Career Preference", type: "select", options: ["Working","Business","Government Job","Self-employed","No Preference","Other"] },
-      { key: "prefCareerOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefCareerOther", label: "Please specify", type: "text", optional: true },
       { key: "prefLocation", label: "Location Preference", type: "select", options: ["Same City","Same Country","Anywhere","Other"] },
-      { key: "prefLocationOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefLocationOther", label: "Please specify", type: "text", optional: true },
       { key: "prefCaste", label: "Caste Preference", type: "select", options: ["Same","Intercaste","No Preference","Other"] },
-      { key: "prefCasteOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefCasteOther", label: "Please specify", type: "text", optional: true },
       { key: "prefReligion", label: "Religion Preference", type: "select", options: ["Hindu","Buddhist","Christian","Muslim","No Preference","Other"] },
-      { key: "prefReligionOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefReligionOther", label: "Please specify", type: "text", optional: true },
       { key: "prefLifestyle", label: "Lifestyle Expectations", type: "select", options: ["Traditional","Modern","Balanced","No Preference","Other"] },
-      { key: "prefLifestyleOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefLifestyleOther", label: "Please specify", type: "text", optional: true },
     ],
   },
   {
@@ -210,6 +210,13 @@ const Biodata = () => {
     for (const f of current.fields) {
       if (!f.optional && !data[f.key]) {
         toast.error(`${f.label} is required`);
+        return false;
+      }
+      const hasOtherOption = f.type === "select" && f.options?.includes("Other");
+      const explicitOtherFieldKey = `${f.key}Other`;
+      const shouldRequireOtherText = hasOtherOption && data[f.key] === "Other";
+      if (shouldRequireOtherText && !data[explicitOtherFieldKey] && !data[`${f.key}Custom`]) {
+        toast.error(`Please specify ${f.label.toLowerCase()}`);
         return false;
       }
     }
@@ -283,6 +290,11 @@ const Biodata = () => {
       return null;
     }
 
+    const hasOtherOption = f.type === "select" && f.options?.includes("Other");
+    const explicitOtherFieldKey = `${f.key}Other`;
+    const hasDedicatedOtherField = current.fields.some((field) => field.key === explicitOtherFieldKey);
+    const needsInlineCustomField = hasOtherOption && data[f.key] === "Other" && !hasDedicatedOtherField;
+
     return (
       <div key={f.key} className="space-y-1.5">
         <div className="flex items-center justify-between">
@@ -301,12 +313,22 @@ const Biodata = () => {
           )}
         </div>
         {f.type === "select" ? (
-          <Select value={data[f.key] || ""} onValueChange={(v) => update(f.key, v)}>
-            <SelectTrigger><SelectValue placeholder={`Select ${f.label.toLowerCase()}`} /></SelectTrigger>
-            <SelectContent>
-              {f.options!.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <>
+            <Select value={data[f.key] || ""} onValueChange={(v) => update(f.key, v)}>
+              <SelectTrigger><SelectValue placeholder={`Select ${f.label.toLowerCase()}`} /></SelectTrigger>
+              <SelectContent>
+                {f.options!.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            {needsInlineCustomField && (
+              <Input
+                type="text"
+                value={data[`${f.key}Custom`] || ""}
+                onChange={(e) => update(`${f.key}Custom`, e.target.value)}
+                placeholder="Please specify"
+              />
+            )}
+          </>
         ) : f.type === "textarea" ? (
           <Textarea value={data[f.key] || ""} onChange={(e) => update(f.key, e.target.value)} rows={4} />
         ) : (

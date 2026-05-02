@@ -27,7 +27,7 @@ const plans = [
   },
   {
     name: "Silver",
-    price: "Rs 500",
+    price: "$5",
     period: "/month",
     popular: false,
     features: [
@@ -40,7 +40,7 @@ const plans = [
   },
   {
     name: "Gold",
-    price: "Rs 1000",
+    price: "$10",
     period: "/month",
     popular: true,
     features: [
@@ -202,10 +202,7 @@ const PremiumPlans = () => {
               <div className="mt-4 mb-6">
                 {(plan as any).isContact ? (
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-heading font-bold">Rs 2000</span>
-                      <span className="line-through text-muted-foreground/50 text-sm">base price</span>
-                    </div>
+                    <p className="text-3xl font-heading font-bold">Custom Pricing</p>
                     <p className="text-xs text-primary font-semibold">Contact for custom pricing</p>
                   </div>
                 ) : (

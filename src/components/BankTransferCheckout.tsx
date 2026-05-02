@@ -21,7 +21,7 @@ const BankTransferCheckout = ({ plan }: BankTransferCheckoutProps) => {
     accountNumber: "1234567890",
     swiftCode: "NBLTNTKA",
     branch: "Kathmandu Branch",
-    amount: plan === "silver" ? "Rs 500" : plan === "gold" ? "Rs 1000" : "Rs 2000",
+    amount: plan === "silver" ? "$5" : plan === "gold" ? "$10" : "Contact support",
   };
 
   const handleCopy = (text: string) => {
