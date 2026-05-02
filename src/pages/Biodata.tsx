@@ -135,14 +135,22 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
     title: "Partner Preferences",
     description: "What you're looking for",
     fields: [
-      { key: "prefAge", label: "Preferred Age Range", type: "select", options: ["18-24","22-28","25-32","28-35","32-40","40+"] },
-      { key: "prefHeight", label: "Preferred Height", type: "select", options: ["< 5'0\"","5'0\" – 5'4\"","5'4\" – 5'8\"","5'8\" – 6'0\"","6'0\"+","No Preference"] },
-      { key: "prefEducation", label: "Education Preference", type: "select", options: ["Bachelors+","Masters+","Doctorate","No Preference"] },
-      { key: "prefCareer", label: "Career Preference", type: "select", options: ["Working","Business","Government Job","Self-employed","No Preference"] },
-      { key: "prefLocation", label: "Location Preference", type: "select", options: ["Same City","Same Country","Anywhere"] },
-      { key: "prefCaste", label: "Caste Preference", type: "select", options: ["Same","Intercaste","No Preference"] },
-      { key: "prefReligion", label: "Religion Preference", type: "select", options: ["Hindu","Buddhist","Christian","Muslim","No Preference"] },
-      { key: "prefLifestyle", label: "Lifestyle Expectations", type: "select", options: ["Traditional","Modern","Balanced","No Preference"] },
+      { key: "prefAge", label: "Preferred Age Range", type: "select", options: ["18-24","22-28","25-32","28-35","32-40","40+","Other"] },
+      { key: "prefAgeOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefHeight", label: "Preferred Height", type: "select", options: ["< 5'0\"","5'0\" – 5'4\"","5'4\" – 5'8\"","5'8\" – 6'0\"","6'0\"+","No Preference","Other"] },
+      { key: "prefHeightOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefEducation", label: "Education Preference", type: "select", options: ["Bachelors+","Masters+","Doctorate","No Preference","Other"] },
+      { key: "prefEducationOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefCareer", label: "Career Preference", type: "select", options: ["Working","Business","Government Job","Self-employed","No Preference","Other"] },
+      { key: "prefCareerOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefLocation", label: "Location Preference", type: "select", options: ["Same City","Same Country","Anywhere","Other"] },
+      { key: "prefLocationOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefCaste", label: "Caste Preference", type: "select", options: ["Same","Intercaste","No Preference","Other"] },
+      { key: "prefCasteOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefReligion", label: "Religion Preference", type: "select", options: ["Hindu","Buddhist","Christian","Muslim","No Preference","Other"] },
+      { key: "prefReligionOther", label: "If other, please specify", type: "text", optional: true },
+      { key: "prefLifestyle", label: "Lifestyle Expectations", type: "select", options: ["Traditional","Modern","Balanced","No Preference","Other"] },
+      { key: "prefLifestyleOther", label: "If other, please specify", type: "text", optional: true },
     ],
   },
   {
@@ -268,6 +276,13 @@ const Biodata = () => {
 
   const renderField = (f: Field) => {
     const isPrivate = privateFields[f.key];
+    const isOtherSpecField = f.key.endsWith("Other");
+    const baseFieldKey = f.key.replace("Other", "");
+
+    if (isOtherSpecField && data[baseFieldKey] !== "Other") {
+      return null;
+    }
+
     return (
       <div key={f.key} className="space-y-1.5">
         <div className="flex items-center justify-between">
