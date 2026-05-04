@@ -7,14 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { stockImages } from "@/constants/stockImages";
 
-const { nepaliWedding, heroSlide2, heroSlide3, heroSlide4, couple1, couple2, couple3 } = stockImages;
+const { weddingImage1, weddingImage2, weddingImage3, weddingImage4, nepaliWedding, heroSlide2, heroSlide3, heroSlide4, couple1, couple2, couple3 } = stockImages;
 
-/** Hero background slideshow — slide 1 fixed; slides 2–4 use dedicated hero URLs in `stockImages` */
+/** Hero background slideshow — using local wedding images */
 const HERO_SLIDES = [
-  { img: nepaliWedding, alt: "Traditional Nepali wedding couple" },
-  { img: heroSlide2, alt: "Wedding rings and celebration" },
-  { img: heroSlide3, alt: "Wedding bouquet and joy" },
-  { img: heroSlide4, alt: "Ceremony and togetherness" },
+  { img: weddingImage1, alt: "Wedding celebration 1" },
+  { img: weddingImage2, alt: "Wedding celebration 2" },
+  { img: weddingImage3, alt: "Wedding celebration 3" },
+  { img: weddingImage4, alt: "Wedding celebration 4" },
 ] as const;
 
 const fadeUp = {

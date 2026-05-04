@@ -5,6 +5,11 @@
 const q = "auto=compress&cs=tinysrgb&w=1200&q=80";
 
 export const stockImages = {
+  /** Local wedding images */
+  weddingImage1: "/image.png",
+  weddingImage2: "/image1.png",
+  weddingImage3: "/image2.png",
+  weddingImage4: "/image3.png",
   /** Traditional Nepali wedding couple — matches user reference (Pexels #29137533) — hero slide 1 */
   nepaliWedding: `https://images.pexels.com/photos/29137533/pexels-photo-29137533.jpeg?${q}`,
   /** Hero slideshow slides 2–4 only (other sections still use couple1–3) */
