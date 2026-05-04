@@ -30,10 +30,10 @@ const Index = () => {
   const heroSlides = HERO_SLIDES;
 
   const stories = [
-    { img: nepaliWedding, names: "Suman & Mina", text: "We wanted something rooted in culture and trust. eBihe.com felt like home — and now we are planning our future together." },
-    { img: couple1, names: "Arun & Priya", text: "We found each other on eBihe.com and knew it was meant to be. Thank you for making our dream come true!" },
-    { img: couple2, names: "Raj & Sita", text: "eBihe.com helped us connect across continents. Now we are happily married and grateful every day." },
-    { img: couple3, names: "Kiran & Anita", text: "The platform made finding my life partner so simple. We are now building a beautiful life together." },
+    { img: weddingImage1, names: "Suman & Mina", text: "We wanted something rooted in culture and trust. eBihe.com felt like home — and now we are planning our future together." },
+    { img: weddingImage2, names: "Arun & Priya", text: "We found each other on eBihe.com and knew it was meant to be. Thank you for making our dream come true!" },
+    { img: weddingImage3, names: "Raj & Sita", text: "eBihe.com helped us connect across continents. Now we are happily married and grateful every day." },
+    { img: weddingImage4, names: "Kiran & Anita", text: "The platform made finding my life partner so simple. We are now building a beautiful life together." },
   ];
 
   useEffect(() => {
