@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { stockImages } from "@/constants/stockImages";
 
 const Dashboard = () => {
   const { profile, user } = useAuth();
@@ -36,7 +37,7 @@ const Dashboard = () => {
       location: "Mogadishu",
       profession: "Doctor",
       match: "98%",
-      image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop"
+      image: stockImages.nepaliWedding,
     },
     {
       id: 2,
@@ -45,7 +46,7 @@ const Dashboard = () => {
       location: "Hargeisa",
       profession: "Software Engineer",
       match: "95%",
-      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop"
+      image: stockImages.couple1,
     },
     {
       id: 3,
@@ -54,8 +55,8 @@ const Dashboard = () => {
       location: "Garowe",
       profession: "Teacher",
       match: "92%",
-      image: "https://images.unsplash.com/photo-1567532939604-b6c5b0ad2ea6?w=400&h=400&fit=crop"
-    }
+      image: stockImages.couple2,
+    },
   ];
 
   return (

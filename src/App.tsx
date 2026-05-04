@@ -21,6 +21,7 @@ import AdvancedSearch from "./pages/AdvancedSearch";
 import Biodata from "./pages/Biodata";
 import BioDataReview from "./pages/BioDataReview";
 import Verification from "./pages/Verification";
+import MemberProfile from "./pages/MemberProfile";
 import Features from "./pages/Features";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/members/:userId" element={<ProtectedRoute><MemberProfile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/expectations" element={<Expectations />} />
               <Route path="/search" element={<AdvancedSearch />} />

@@ -1,16 +1,21 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserPlus, Search, MessageCircle, Shield, Heart, CircleCheck as CheckCircle, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Using the project hero image asset
-const heroImage = "/image.png";
-const couple1 = "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
-const couple2 = "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
-const couple3 = "https://images.pexels.com/photos/1183622/pexels-photo-1183622.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { stockImages } from "@/constants/stockImages";
+
+const { nepaliWedding, heroSlide2, heroSlide3, heroSlide4, couple1, couple2, couple3 } = stockImages;
+
+/** Hero background slideshow — slide 1 fixed; slides 2–4 use dedicated hero URLs in `stockImages` */
+const HERO_SLIDES = [
+  { img: nepaliWedding, alt: "Traditional Nepali wedding couple" },
+  { img: heroSlide2, alt: "Wedding rings and celebration" },
+  { img: heroSlide3, alt: "Wedding bouquet and joy" },
+  { img: heroSlide4, alt: "Ceremony and togetherness" },
+] as const;
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -22,14 +27,10 @@ const Index = () => {
   const [storyIdx, setStoryIdx] = useState(0);
   const [heroIdx, setHeroIdx] = useState(0);
 
-  const heroSlides = [
-    { img: heroImage, alt: "Happy couple" },
-    { img: couple1, alt: "Arun & Priya" },
-    { img: couple2, alt: "Raj & Sita" },
-    { img: couple3, alt: "Kiran & Anita" },
-  ];
+  const heroSlides = HERO_SLIDES;
 
   const stories = [
+    { img: nepaliWedding, names: "Suman & Mina", text: "We wanted something rooted in culture and trust. eBihe.com felt like home — and now we are planning our future together." },
     { img: couple1, names: "Arun & Priya", text: "We found each other on eBihe.com and knew it was meant to be. Thank you for making our dream come true!" },
     { img: couple2, names: "Raj & Sita", text: "eBihe.com helped us connect across continents. Now we are happily married and grateful every day." },
     { img: couple3, names: "Kiran & Anita", text: "The platform made finding my life partner so simple. We are now building a beautiful life together." },
@@ -40,7 +41,7 @@ const Index = () => {
       setHeroIdx((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [heroSlides.length]);
+  }, []);
 
   return (
     <>

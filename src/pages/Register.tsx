@@ -39,34 +39,35 @@ const Register = () => {
     setLoading(true);
     
     try {
-      // 1. Sign up the user
+      /*
+        Profiles row is created server-side via trigger handle_new_user (see migrations).
+        That avoids FK errors from inserting profiles before auth.users is visible/commit-safe.
+        User fields are passed through User Metadata → raw_user_meta_data → trigger.
+      */
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            gender: formData.gender,
+            on_behalf: formData.onBehalf,
+            date_of_birth: formData.dateOfBirth,
+          },
+        },
       });
 
       if (authError) throw authError;
 
-      if (authData.user) {
-        // 2. Create the user profile
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([
-            {
-              id: authData.user.id,
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-              gender: formData.gender,
-              on_behalf: formData.onBehalf,
-              date_of_birth: formData.dateOfBirth,
-            },
-          ]);
-
-        if (profileError) throw profileError;
-
-        toast.success("Account created successfully!");
-        navigate("/expectations");
+      if (!authData.user?.id) {
+        toast.success("Check your email to confirm your account, then log in.");
+        navigate("/login");
+        return;
       }
+
+      toast.success("Account created successfully!");
+      navigate("/expectations");
     } catch (error: any) {
       toast.error(error.message || "An error occurred during registration");
       console.error("Registration error:", error);

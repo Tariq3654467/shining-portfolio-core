@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import { stockImages } from "@/constants/stockImages";
 
-const couple1 = "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
-const couple2 = "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
-const couple3 = "https://images.pexels.com/photos/1183622/pexels-photo-1183622.jpeg?auto=compress&cs=tinysrgb&w=800&q=80";
+const { nepaliWedding, couple1, couple2, couple3 } = stockImages;
 
 const stories = [
+  { img: nepaliWedding, names: "Suman & Mina", location: "Kathmandu, Nepal", text: "We wanted a match that honored our families and traditions. eBihe.com made that journey respectful and clear — we could not be happier.", date: "Married in 2025" },
   { img: couple1, names: "Arun & Priya", location: "Kathmandu, Nepal", text: "We found each other on eBihe.com and knew it was meant to be. The platform made the entire process feel natural and respectful. Thank you for making our dream come true!", date: "Married in 2024" },
   { img: couple2, names: "Raj & Sita", location: "New York, USA", text: "eBihe.com helped us connect across continents. Despite the distance, the platform made communication so easy. Now we are happily married and grateful every day.", date: "Married in 2023" },
   { img: couple3, names: "Kiran & Anita", location: "London, UK", text: "The platform made finding my life partner so simple. The verified profiles gave us confidence, and we connected on a deeper level right from the start.", date: "Married in 2024" },
