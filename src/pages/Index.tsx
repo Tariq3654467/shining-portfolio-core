@@ -53,7 +53,7 @@ const Index = () => {
               key={idx}
               src={slide.img}
               alt={slide.alt}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-[center_22%]"
               width={1920}
               height={1080}
               initial={{ opacity: 0 }}
