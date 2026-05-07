@@ -20,7 +20,6 @@ const allMembers = [
   { id: 8, name: "Rajan B.", age: 34, height: 182, location: "Kathmandu", country: "Nepal", profession: "Entrepreneur", education: "Bachelors", religion: "Buddhist", caste: "Gurung", maritalStatus: "Never Married", gender: "Male" },
 ];
 
-const educationLevels = ["Any", "High School", "Bachelors", "Masters", "Doctorate"];
 const religions = ["Any", "Hindu", "Buddhist", "Christian", "Muslim", "Other"];
 const maritalStatuses = ["Any", "Never Married", "Divorced", "Widowed"];
 const countries = [
@@ -32,7 +31,6 @@ const countries = [
   "South Africa", "Egypt", "Nigeria", "Kenya", "Brazil", "Mexico", "Argentina", "Chile",
   "New Zealand", "Ireland", "Iceland", "Turkey", "Russia", "Ukraine", "Hong Kong"
 ];
-const locations = ["Any", "Kathmandu", "Pokhara", "Biratnagar", "Chitwan", "Dharan", "Janakpur", "Birgunj", "Bhaktapur", "Lalitpur"];
 const castes = [
   "Any", "Chhetri", "Bahun/Hill Brahmin", "Thakuri", "Magar", "Gurung", "Ghale", "Tamang",
   "Chepang", "Rai", "Limbu", "Sunuwar", "Sherpa", "Bhote", "Thakali", "Tharu", "Rajbanshi",
@@ -44,11 +42,11 @@ const AdvancedSearch = () => {
   const [gender, setGender] = useState("Any");
   const [ageRange, setAgeRange] = useState<[number, number]>([21, 40]);
   const [heightRange, setHeightRange] = useState<[number, number]>([150, 195]);
-  const [education, setEducation] = useState("Any");
+  const [education, setEducation] = useState("");
   const [religion, setReligion] = useState("Any");
   const [marital, setMarital] = useState("Any");
   const [country, setCountry] = useState("Any");
-  const [location, setLocation] = useState("Any");
+  const [location, setLocation] = useState("");
   const [caste, setCaste] = useState("Any");
 
   const filtered = useMemo(() => {
@@ -57,11 +55,11 @@ const AdvancedSearch = () => {
       if (gender !== "Any" && m.gender !== gender) return false;
       if (m.age < ageRange[0] || m.age > ageRange[1]) return false;
       if (m.height < heightRange[0] || m.height > heightRange[1]) return false;
-      if (education !== "Any" && m.education !== education) return false;
+      if (education && !m.education.toLowerCase().includes(education.toLowerCase())) return false;
       if (religion !== "Any" && m.religion !== religion) return false;
       if (marital !== "Any" && m.maritalStatus !== marital) return false;
       if (country !== "Any" && m.country !== country) return false;
-      if (location !== "Any" && m.location !== location) return false;
+      if (location && !m.location.toLowerCase().includes(location.toLowerCase())) return false;
       if (caste !== "Any" && m.caste !== caste) return false;
       return true;
     });
@@ -69,16 +67,16 @@ const AdvancedSearch = () => {
 
   const reset = () => {
     setKeyword(""); setGender("Any"); setAgeRange([21, 40]); setHeightRange([150, 195]);
-    setEducation("Any"); setReligion("Any"); setMarital("Any"); setCountry("Any"); setLocation("Any"); setCaste("Any");
+    setEducation(""); setReligion("Any"); setMarital("Any"); setCountry("Any"); setLocation(""); setCaste("Any");
   };
 
   const activeFilters = [
     gender !== "Any" && `Gender: ${gender}`,
-    education !== "Any" && `Edu: ${education}`,
+    education && `Edu: ${education}`,
     religion !== "Any" && `Religion: ${religion}`,
     marital !== "Any" && `Status: ${marital}`,
     country !== "Any" && `Country: ${country}`,
-    location !== "Any" && `Location: ${location}`,
+    location && `Location: ${location}`,
     caste !== "Any" && `Caste: ${caste}`,
   ].filter(Boolean) as string[];
 
@@ -109,12 +107,20 @@ const AdvancedSearch = () => {
         <Slider min={140} max={210} step={1} value={heightRange} onValueChange={(v) => setHeightRange(v as [number, number])} className="mt-2" />
       </div>
 
+      <div>
+        <label className="text-xs font-medium text-muted-foreground">Education</label>
+        <Input
+          placeholder="Type education"
+          value={education}
+          onChange={(e) => setEducation(e.target.value)}
+          className="mt-1"
+        />
+      </div>
+
       {[
-        { label: "Education", value: education, setter: setEducation, options: educationLevels },
         { label: "Religion", value: religion, setter: setReligion, options: religions },
         { label: "Marital Status", value: marital, setter: setMarital, options: maritalStatuses },
         { label: "Country", value: country, setter: setCountry, options: countries },
-        { label: "Area of Residence", value: location, setter: setLocation, options: locations },
         { label: "Caste / Ethnicity", value: caste, setter: setCaste, options: castes },
       ].map((f) => (
         <div key={f.label}>
@@ -127,6 +133,16 @@ const AdvancedSearch = () => {
           </Select>
         </div>
       ))}
+
+      <div>
+        <label className="text-xs font-medium text-muted-foreground">Area of Residence</label>
+        <Input
+          placeholder="Type area of residence"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="mt-1"
+        />
+      </div>
 
       <Button variant="outline" className="w-full" onClick={reset}>Reset Filters</Button>
     </div>
