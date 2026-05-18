@@ -11,6 +11,10 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
+import { TaxonomySelect } from "@/components/TaxonomySelect";
+import { CAREER_TAXONOMY, formatOccupation } from "@/constants/careerTaxonomy";
+import { EDUCATION_LEVELS, FIELD_OF_STUDY_TAXONOMY, formatFieldOfStudy } from "@/constants/educationTaxonomy";
+import { RESIDENCE_AREAS } from "@/constants/locationOptions";
 
 type Field = {
   key: string;
@@ -102,7 +106,8 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
     description: "Where are you based?",
     fields: [
       { key: "country", label: "Country", type: "select", options: ["Nepal","India","USA","UK","Australia","Canada","Other"] },
-      { key: "areaOfResidence", label: "Area of Residence (City/District)" },
+      { key: "areaOfResidence", label: "Area of Residence (City/District)", type: "select", options: [...RESIDENCE_AREAS.filter((a) => a !== "Any")] },
+      { key: "areaOfResidenceOther", label: "Please specify city/area", type: "text", optional: true },
       { key: "currentAddress", label: "Current Address", optional: true },
       { key: "permanentAddress", label: "Permanent Address", optional: true },
       { key: "relocate", label: "Willing to Relocate", type: "select", options: ["Yes","No","Maybe"] },
@@ -112,9 +117,7 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
     title: "Education & Career",
     description: "Your professional background",
     fields: [
-      { key: "education", label: "Highest Education", type: "select", options: ["High School","Bachelors","Masters","Doctorate","Other"] },
-      { key: "fieldOfStudy", label: "Field of Study" },
-      { key: "occupation", label: "Occupation / Profession" },
+      { key: "education", label: "Highest Education", type: "select", options: EDUCATION_LEVELS.filter((l) => l !== "Any") as unknown as string[] },
       { key: "company", label: "Company / Organization", optional: true },
       { key: "income", label: "Annual Income", type: "select", options: ["< 5 Lakh","5 – 10 Lakh","10 – 20 Lakh","20 – 50 Lakh","50 Lakh+","Prefer not to say"], optional: true, privateToggle: true },
       { key: "workLocation", label: "Work Location" },
@@ -249,9 +252,23 @@ const Biodata = () => {
         .eq("user_id", user.id)
         .maybeSingle();
 
+      const payloadToSave = {
+        ...data,
+        occupation: formatOccupation(data.occupationCategory, data.occupationRole, data.occupationOther),
+        fieldOfStudy: formatFieldOfStudy(
+          data.fieldOfStudyCategory,
+          data.fieldOfStudy,
+          data.fieldOfStudyOther
+        ),
+        areaOfResidence:
+          data.areaOfResidence === "Other"
+            ? data.areaOfResidenceOther?.trim() || "Other"
+            : data.areaOfResidence,
+      };
+
       const bioDataPayload = {
         user_id: user.id,
-        payload: data,
+        payload: payloadToSave,
         private_fields: privateFields,
         profile_picture_url: profilePictureUrl,
         updated_at: new Date().toISOString(),
@@ -287,6 +304,10 @@ const Biodata = () => {
     const baseFieldKey = f.key.replace("Other", "");
 
     if (isOtherSpecField && data[baseFieldKey] !== "Other") {
+      return null;
+    }
+
+    if (f.key === "areaOfResidenceOther" && data.areaOfResidence !== "Other") {
       return null;
     }
 
@@ -397,6 +418,37 @@ const Biodata = () => {
                   {renderField(f)}
                 </div>
               ))}
+
+              {current.title === "Education & Career" && (
+                <>
+                  <div className="sm:col-span-2">
+                    <TaxonomySelect
+                      categoryLabel="Field of Study Category"
+                      roleLabel="Field of Study"
+                      categories={FIELD_OF_STUDY_TAXONOMY}
+                      categoryId={data.fieldOfStudyCategory || ""}
+                      role={data.fieldOfStudy || ""}
+                      otherText={data.fieldOfStudyOther || ""}
+                      onCategoryChange={(v) => update("fieldOfStudyCategory", v)}
+                      onRoleChange={(v) => update("fieldOfStudy", v)}
+                      onOtherChange={(v) => update("fieldOfStudyOther", v)}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <TaxonomySelect
+                      categoryLabel="Career Category"
+                      roleLabel="Profession / Role"
+                      categories={CAREER_TAXONOMY}
+                      categoryId={data.occupationCategory || ""}
+                      role={data.occupationRole || ""}
+                      otherText={data.occupationOther || ""}
+                      onCategoryChange={(v) => update("occupationCategory", v)}
+                      onRoleChange={(v) => update("occupationRole", v)}
+                      onOtherChange={(v) => update("occupationOther", v)}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </motion.div>
         </AnimatePresence>

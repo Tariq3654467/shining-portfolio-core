@@ -7,17 +7,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { TaxonomySelect } from "@/components/TaxonomySelect";
+import {
+  CAREER_TAXONOMY,
+  CAREER_CATEGORY_ANY,
+  getCareerCategoryLabel,
+  matchesCareerFilter,
+} from "@/constants/careerTaxonomy";
+import {
+  EDUCATION_LEVELS,
+  FIELD_OF_STUDY_TAXONOMY,
+  FIELD_CATEGORY_ANY,
+  getFieldCategoryLabel,
+  matchesEducationFilter,
+} from "@/constants/educationTaxonomy";
+import { RESIDENCE_AREAS } from "@/constants/locationOptions";
 
-// Mock dataset linked to biodata fields
 const allMembers = [
-  { id: 1, name: "Aarav S.", age: 28, height: 175, location: "Kathmandu", country: "Nepal", profession: "Software Engineer", education: "Masters", religion: "Hindu", caste: "Brahmin", maritalStatus: "Never Married", gender: "Male" },
-  { id: 2, name: "Priya M.", age: 25, height: 162, location: "Pokhara", country: "Nepal", profession: "Doctor", education: "Doctorate", religion: "Hindu", caste: "Chettri", maritalStatus: "Never Married", gender: "Female" },
-  { id: 3, name: "Rohan K.", age: 30, height: 180, location: "New York", country: "USA", profession: "Business Analyst", education: "Masters", religion: "Hindu", caste: "Newar", maritalStatus: "Divorced", gender: "Male" },
-  { id: 4, name: "Sita R.", age: 26, height: 165, location: "London", country: "UK", profession: "Architect", education: "Bachelors", religion: "Hindu", caste: "Brahmin", maritalStatus: "Never Married", gender: "Female" },
-  { id: 5, name: "Bikash T.", age: 32, height: 178, location: "Sydney", country: "Australia", profession: "Civil Engineer", education: "Bachelors", religion: "Buddhist", caste: "Tamang", maritalStatus: "Never Married", gender: "Male" },
-  { id: 6, name: "Anita G.", age: 27, height: 160, location: "Kathmandu", country: "Nepal", profession: "Teacher", education: "Masters", religion: "Hindu", caste: "Magar", maritalStatus: "Never Married", gender: "Female" },
-  { id: 7, name: "Suman P.", age: 29, height: 170, location: "Biratnagar", country: "Nepal", profession: "Banker", education: "Masters", religion: "Hindu", caste: "Chettri", maritalStatus: "Widowed", gender: "Female" },
-  { id: 8, name: "Rajan B.", age: 34, height: 182, location: "Kathmandu", country: "Nepal", profession: "Entrepreneur", education: "Bachelors", religion: "Buddhist", caste: "Gurung", maritalStatus: "Never Married", gender: "Male" },
+  { id: 1, name: "Aarav S.", age: 28, height: 175, location: "Kathmandu", country: "Nepal", profession: "Engineering & Technology · Software Engineer / Developer", occupationCategory: "engineering", occupationRole: "Software Engineer / Developer", education: "Masters", fieldOfStudyCategory: "engineering", fieldOfStudy: "Computer Science / IT", religion: "Hindu", caste: "Brahmin", maritalStatus: "Never Married", gender: "Male" },
+  { id: 2, name: "Priya M.", age: 25, height: 162, location: "Pokhara", country: "Nepal", profession: "Medicine & Healthcare · Doctor (General Physician)", occupationCategory: "medicine", occupationRole: "Doctor (General Physician)", education: "Doctorate / PhD", fieldOfStudyCategory: "medicine", fieldOfStudy: "MBBS / Medicine", religion: "Hindu", caste: "Chettri", maritalStatus: "Never Married", gender: "Female" },
+  { id: 3, name: "Rohan K.", age: 30, height: 180, location: "New York", country: "USA", profession: "Business & Finance · Business Analyst", occupationCategory: "business", occupationRole: "Business Analyst", education: "Masters", fieldOfStudyCategory: "business", fieldOfStudy: "Business Administration (BBA/MBA)", religion: "Hindu", caste: "Newar", maritalStatus: "Divorced", gender: "Male" },
+  { id: 4, name: "Sita R.", age: 26, height: 165, location: "London", country: "UK", profession: "Engineering & Technology · Architect", occupationCategory: "engineering", occupationRole: "Architect", education: "Bachelors", fieldOfStudyCategory: "engineering", fieldOfStudy: "Architecture", religion: "Hindu", caste: "Brahmin", maritalStatus: "Never Married", gender: "Female" },
+  { id: 5, name: "Bikash T.", age: 32, height: 178, location: "Sydney", country: "Australia", profession: "Engineering & Technology · Civil Engineer", occupationCategory: "engineering", occupationRole: "Civil Engineer", education: "Bachelors", fieldOfStudyCategory: "engineering", fieldOfStudy: "Civil Engineering", religion: "Buddhist", caste: "Tamang", maritalStatus: "Never Married", gender: "Male" },
+  { id: 6, name: "Anita G.", age: 27, height: 160, location: "Kathmandu", country: "Nepal", profession: "Education & Research · Teacher", occupationCategory: "education", occupationRole: "Teacher", education: "Masters", fieldOfStudyCategory: "education", fieldOfStudy: "Education", religion: "Hindu", caste: "Magar", maritalStatus: "Never Married", gender: "Female" },
+  { id: 7, name: "Suman P.", age: 29, height: 170, location: "Biratnagar", country: "Nepal", profession: "Business & Finance · Banker", occupationCategory: "business", occupationRole: "Banker", education: "Masters", fieldOfStudyCategory: "business", fieldOfStudy: "Accounting & Finance", religion: "Hindu", caste: "Chettri", maritalStatus: "Widowed", gender: "Female" },
+  { id: 8, name: "Rajan B.", age: 34, height: 182, location: "Kathmandu", country: "Nepal", profession: "Business & Finance · Business Owner / Entrepreneur", occupationCategory: "business", occupationRole: "Business Owner / Entrepreneur", education: "Bachelors", fieldOfStudyCategory: "business", fieldOfStudy: "Commerce", religion: "Buddhist", caste: "Gurung", maritalStatus: "Never Married", gender: "Male" },
 ];
 
 const religions = ["Any", "Hindu", "Buddhist", "Christian", "Muslim", "Other"];
@@ -29,12 +43,12 @@ const countries = [
   "Thailand", "Malaysia", "Singapore", "Philippines", "Indonesia", "Vietnam", "Pakistan",
   "Bangladesh", "Sri Lanka", "UAE", "Saudi Arabia", "Qatar", "Oman", "Kuwait", "Bahrain",
   "South Africa", "Egypt", "Nigeria", "Kenya", "Brazil", "Mexico", "Argentina", "Chile",
-  "New Zealand", "Ireland", "Iceland", "Turkey", "Russia", "Ukraine", "Hong Kong"
+  "New Zealand", "Ireland", "Iceland", "Turkey", "Russia", "Ukraine", "Hong Kong",
 ];
 const castes = [
   "Any", "Chhetri", "Bahun/Hill Brahmin", "Thakuri", "Magar", "Gurung", "Ghale", "Tamang",
   "Chepang", "Rai", "Limbu", "Sunuwar", "Sherpa", "Bhote", "Thakali", "Tharu", "Rajbanshi",
-  "Newar Brahmins", "Shrestha", "Maithil Brahmin", "Rajput", "Kayastha", "Yadav", "Other"
+  "Newar Brahmins", "Shrestha", "Maithil Brahmin", "Rajput", "Kayastha", "Yadav", "Other",
 ];
 
 const AdvancedSearch = () => {
@@ -42,11 +56,15 @@ const AdvancedSearch = () => {
   const [gender, setGender] = useState("Any");
   const [ageRange, setAgeRange] = useState<[number, number]>([21, 40]);
   const [heightRange, setHeightRange] = useState<[number, number]>([150, 195]);
-  const [education, setEducation] = useState("");
+  const [educationLevel, setEducationLevel] = useState("Any");
+  const [fieldCategory, setFieldCategory] = useState(FIELD_CATEGORY_ANY);
+  const [fieldRole, setFieldRole] = useState(FIELD_CATEGORY_ANY);
+  const [careerCategory, setCareerCategory] = useState(CAREER_CATEGORY_ANY);
+  const [careerRole, setCareerRole] = useState(CAREER_CATEGORY_ANY);
   const [religion, setReligion] = useState("Any");
   const [marital, setMarital] = useState("Any");
   const [country, setCountry] = useState("Any");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("Any");
   const [caste, setCaste] = useState("Any");
 
   const filtered = useMemo(() => {
@@ -55,28 +73,43 @@ const AdvancedSearch = () => {
       if (gender !== "Any" && m.gender !== gender) return false;
       if (m.age < ageRange[0] || m.age > ageRange[1]) return false;
       if (m.height < heightRange[0] || m.height > heightRange[1]) return false;
-      if (education && !m.education.toLowerCase().includes(education.toLowerCase())) return false;
+      if (!matchesEducationFilter(m, educationLevel, fieldCategory, fieldRole)) return false;
+      if (!matchesCareerFilter(m, careerCategory, careerRole)) return false;
       if (religion !== "Any" && m.religion !== religion) return false;
       if (marital !== "Any" && m.maritalStatus !== marital) return false;
       if (country !== "Any" && m.country !== country) return false;
-      if (location && !m.location.toLowerCase().includes(location.toLowerCase())) return false;
+      if (location !== "Any" && m.location !== location) return false;
       if (caste !== "Any" && m.caste !== caste) return false;
       return true;
     });
-  }, [keyword, gender, ageRange, heightRange, education, religion, marital, country, location, caste]);
+  }, [keyword, gender, ageRange, heightRange, educationLevel, fieldCategory, fieldRole, careerCategory, careerRole, religion, marital, country, location, caste]);
 
   const reset = () => {
-    setKeyword(""); setGender("Any"); setAgeRange([21, 40]); setHeightRange([150, 195]);
-    setEducation(""); setReligion("Any"); setMarital("Any"); setCountry("Any"); setLocation(""); setCaste("Any");
+    setKeyword("");
+    setGender("Any");
+    setAgeRange([21, 40]);
+    setHeightRange([150, 195]);
+    setEducationLevel("Any");
+    setFieldCategory(FIELD_CATEGORY_ANY);
+    setFieldRole(FIELD_CATEGORY_ANY);
+    setCareerCategory(CAREER_CATEGORY_ANY);
+    setCareerRole(CAREER_CATEGORY_ANY);
+    setReligion("Any");
+    setMarital("Any");
+    setCountry("Any");
+    setLocation("Any");
+    setCaste("Any");
   };
 
   const activeFilters = [
     gender !== "Any" && `Gender: ${gender}`,
-    education && `Edu: ${education}`,
+    educationLevel !== "Any" && `Education: ${educationLevel}`,
+    fieldCategory !== FIELD_CATEGORY_ANY && `Field: ${getFieldCategoryLabel(fieldCategory)}${fieldRole !== FIELD_CATEGORY_ANY ? ` · ${fieldRole}` : ""}`,
+    careerCategory !== CAREER_CATEGORY_ANY && `Career: ${getCareerCategoryLabel(careerCategory)}${careerRole !== CAREER_CATEGORY_ANY ? ` · ${careerRole}` : ""}`,
     religion !== "Any" && `Religion: ${religion}`,
     marital !== "Any" && `Status: ${marital}`,
     country !== "Any" && `Country: ${country}`,
-    location && `Location: ${location}`,
+    location !== "Any" && `Area: ${location}`,
     caste !== "Any" && `Caste: ${caste}`,
   ].filter(Boolean) as string[];
 
@@ -108,14 +141,42 @@ const AdvancedSearch = () => {
       </div>
 
       <div>
-        <label className="text-xs font-medium text-muted-foreground">Education</label>
-        <Input
-          placeholder="Type education"
-          value={education}
-          onChange={(e) => setEducation(e.target.value)}
-          className="mt-1"
-        />
+        <label className="text-xs font-medium text-muted-foreground">Education Level</label>
+        <Select value={educationLevel} onValueChange={setEducationLevel}>
+          <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {EDUCATION_LEVELS.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
+
+      <TaxonomySelect
+        categoryLabel="Field of Study"
+        roleLabel="Specialization"
+        categories={FIELD_OF_STUDY_TAXONOMY}
+        categoryId={fieldCategory === FIELD_CATEGORY_ANY ? "any" : fieldCategory}
+        role={fieldRole === FIELD_CATEGORY_ANY ? "" : fieldRole}
+        onCategoryChange={(v) => {
+          setFieldCategory(v === "any" ? FIELD_CATEGORY_ANY : v);
+          setFieldRole(FIELD_CATEGORY_ANY);
+        }}
+        onRoleChange={(v) => setFieldRole(v || FIELD_CATEGORY_ANY)}
+        allowAny
+      />
+
+      <TaxonomySelect
+        categoryLabel="Career Field"
+        roleLabel="Profession"
+        categories={CAREER_TAXONOMY}
+        categoryId={careerCategory === CAREER_CATEGORY_ANY ? "any" : careerCategory}
+        role={careerRole === CAREER_CATEGORY_ANY ? "" : careerRole}
+        onCategoryChange={(v) => {
+          setCareerCategory(v === "any" ? CAREER_CATEGORY_ANY : v);
+          setCareerRole(CAREER_CATEGORY_ANY);
+        }}
+        onRoleChange={(v) => setCareerRole(v || CAREER_CATEGORY_ANY)}
+        allowAny
+      />
 
       {[
         { label: "Religion", value: religion, setter: setReligion, options: religions },
@@ -136,12 +197,12 @@ const AdvancedSearch = () => {
 
       <div>
         <label className="text-xs font-medium text-muted-foreground">Area of Residence</label>
-        <Input
-          placeholder="Type area of residence"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="mt-1"
-        />
+        <Select value={location} onValueChange={setLocation}>
+          <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {RESIDENCE_AREAS.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
 
       <Button variant="outline" className="w-full" onClick={reset}>Reset Filters</Button>
@@ -153,17 +214,15 @@ const AdvancedSearch = () => {
       <div className="container">
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-heading font-bold">Advanced Search</h1>
-          <p className="text-muted-foreground mt-2">Find your ideal match using detailed biodata filters</p>
+          <p className="text-muted-foreground mt-2">Find your ideal match using structured education and career filters</p>
         </div>
 
         <div className="grid lg:grid-cols-[300px_1fr] gap-6">
-          {/* Sidebar (desktop) */}
           <aside className="hidden lg:block bg-card border rounded-xl p-5 h-fit sticky top-20">
             <h3 className="font-heading font-semibold mb-4">Filters</h3>
             <FilterPanel />
           </aside>
 
-          {/* Mobile filter trigger */}
           <div className="lg:hidden flex items-center justify-between mb-1">
             <Sheet>
               <SheetTrigger asChild>
@@ -181,9 +240,7 @@ const AdvancedSearch = () => {
             {activeFilters.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {activeFilters.map((f) => (
-                  <Badge key={f} variant="secondary" className="gap-1">
-                    {f}
-                  </Badge>
+                  <Badge key={f} variant="secondary" className="gap-1">{f}</Badge>
                 ))}
                 <button onClick={reset} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
                   <X className="h-3 w-3" /> Clear all
