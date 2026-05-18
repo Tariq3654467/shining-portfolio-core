@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -93,6 +94,15 @@ const Register = () => {
           </div>
           <h1 className="text-2xl font-heading font-bold">Create Account</h1>
           <p className="text-sm text-muted-foreground">Join eBihe.com and find your perfect match</p>
+        </div>
+
+        <SocialLoginButtons />
+
+        <div className="relative my-5">
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">Or register with email</span>
+          </div>
         </div>
 
         <form className="space-y-4" onSubmit={handleRegister}>

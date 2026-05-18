@@ -177,21 +177,22 @@ export function matchesCareerFilter(
   roleFilter: string
 ): boolean {
   if (categoryFilter === CAREER_CATEGORY_ANY && roleFilter === CAREER_CATEGORY_ANY) return true;
+
   const cat = member.occupationCategory ?? "";
   const role = member.occupationRole ?? "";
-  const legacy = member.profession?.toLowerCase() ?? "";
+  const legacy = (member.profession ?? "").toLowerCase();
 
   if (categoryFilter !== CAREER_CATEGORY_ANY) {
-    if (cat === categoryFilter) {
-      if (roleFilter === CAREER_CATEGORY_ANY) return true;
-      return role === roleFilter;
-    }
-    const catLabel = getCareerCategoryLabel(categoryFilter).toLowerCase();
-    if (!legacy.includes(catLabel) && cat !== categoryFilter) return false;
+    const catMatch =
+      cat === categoryFilter ||
+      legacy.includes(getCareerCategoryLabel(categoryFilter).toLowerCase());
+    if (!catMatch) return false;
   }
+
   if (roleFilter !== CAREER_CATEGORY_ANY) {
-    if (role === roleFilter) return true;
-    return legacy.includes(roleFilter.toLowerCase());
+    const roleMatch = role === roleFilter || legacy.includes(roleFilter.toLowerCase());
+    if (!roleMatch) return false;
   }
+
   return true;
 }
