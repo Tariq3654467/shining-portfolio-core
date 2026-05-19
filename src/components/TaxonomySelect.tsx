@@ -12,6 +12,7 @@ type TaxonomySelectProps = {
   onCategoryChange: (id: string) => void;
   onRoleChange: (role: string) => void;
   onOtherChange?: (text: string) => void;
+  otherLabel?: string;
   allowAny?: boolean;
   anyLabel?: string;
 };
@@ -26,6 +27,7 @@ export function TaxonomySelect({
   onCategoryChange,
   onRoleChange,
   onOtherChange,
+  otherLabel = "Please specify",
   allowAny = false,
   anyLabel = "Any",
 }: TaxonomySelectProps) {
@@ -78,11 +80,11 @@ export function TaxonomySelect({
 
       {showOther && onOtherChange && (
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Please specify</label>
+          <label className="text-sm font-medium">{otherLabel}</label>
           <Input
             value={otherText}
             onChange={(e) => onOtherChange(e.target.value)}
-            placeholder="Enter details"
+            placeholder="Please specify"
           />
         </div>
       )}

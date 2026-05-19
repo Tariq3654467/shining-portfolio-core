@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
+import { useVerification } from "@/hooks/useVerification";
+import { VerificationRequiredBanner } from "@/components/VerificationRequiredBanner";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { sanitizePayloadForViewer, payloadAgeNum } from "@/lib/publicBiodata";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
@@ -53,6 +56,7 @@ type CardModel = ReturnType<typeof toCardModel>;
 
 const ActiveMembers = () => {
   const { user, loading: authLoading } = useAuth();
+  const { isFullyVerified, loading: verificationLoading } = useVerification();
   const [rows, setRows] = useState<BiodataRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -183,7 +187,11 @@ const ActiveMembers = () => {
           </div>
         )}
 
-        {(user || authLoading) && (
+        {user && !authLoading && !verificationLoading && !isFullyVerified && (
+          <VerificationRequiredBanner />
+        )}
+
+        {user && isFullyVerified && !verificationLoading && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
           <div className={`lg:col-span-1 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
             <div className="bg-card rounded-xl border p-4 space-y-5">
@@ -323,8 +331,9 @@ const ActiveMembers = () => {
                       </Avatar>
                     </div>
                     <div className="p-5">
-                      <h3 className="text-lg font-heading font-semibold">
+                      <h3 className="text-lg font-heading font-semibold flex items-center gap-2 flex-wrap">
                         {m.name}
+                        <VerifiedBadge verified showLabel={false} />
                         {(m.ageLabel || m.age !== null) && (
                           <span className="text-muted-foreground font-body text-base">
                             , {m.age !== null ? m.age : m.ageLabel}

@@ -17,10 +17,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useVerification } from "@/hooks/useVerification";
 import { stockImages } from "@/constants/stockImages";
 
 const Dashboard = () => {
   const { profile, user } = useAuth();
+  const { isFullyVerified, emailVerified, phoneVerified, loading: verificationLoading } = useVerification();
 
   const stats = [
     { label: "Profile Views", value: "128", icon: Users, color: "text-blue-500" },
@@ -191,13 +193,34 @@ const Dashboard = () => {
                 </div>
                 <h3 className="font-bold text-primary">Trust & Safety</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
-                Your profile is verified. This helps other members feel safe connecting with you.
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-green-500" />
-                <span className="text-xs font-medium uppercase tracking-wider text-green-600">Verified Member</span>
-              </div>
+              {verificationLoading ? (
+                <p className="text-sm text-muted-foreground">Checking verification status…</p>
+              ) : isFullyVerified ? (
+                <>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Your email and phone are verified. Other members can find you in search and browse your profile.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                    <span className="text-xs font-medium uppercase tracking-wider text-green-600">Verified Member</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Complete verification to browse members and appear in search results.
+                  </p>
+                  <ul className="text-xs text-muted-foreground space-y-1 mb-4">
+                    <li>Email: {emailVerified ? "Verified" : "Pending"}</li>
+                    <li>Phone: {phoneVerified ? "Verified" : "Pending"}</li>
+                  </ul>
+                  <Link to="/verification">
+                    <Button size="sm" className="w-full gradient-primary text-primary-foreground rounded-xl">
+                      Complete verification
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Quick Search */}

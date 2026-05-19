@@ -26,6 +26,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
+import { useVerification } from "@/hooks/useVerification";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 interface BioDataInfo {
   fullName?: string;
@@ -41,6 +43,7 @@ interface BioDataInfo {
 
 const Profile = () => {
   const { user, profile, loading, signOut } = useAuth();
+  const { isFullyVerified, emailVerified, phoneVerified } = useVerification();
   const navigate = useNavigate();
   const [biodata, setBiodata] = useState<BioDataInfo | null>(null);
   const [biodataLoading, setBiodataLoading] = useState(true);
@@ -205,7 +208,9 @@ const Profile = () => {
                           <h1 className="text-4xl font-heading font-bold text-foreground">
                             {biodata?.fullName || profile?.first_name || "User"}
                           </h1>
-                          <CheckCircle2 className="h-6 w-6 text-primary fill-primary/10" aria-label="Verified Member" />
+                          {isFullyVerified && (
+                            <CheckCircle2 className="h-6 w-6 text-green-600 fill-green-500/10" aria-label="Verified Member" />
+                          )}
                         </div>
                         <p className="text-lg text-muted-foreground flex items-center justify-center md:justify-start gap-2 mt-1">
                           <Mail className="h-4 w-4" /> {user.email}
@@ -224,9 +229,13 @@ const Profile = () => {
                       <span className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
                         Member
                       </span>
-                      <span className="px-4 py-1.5 rounded-full bg-green-500/10 text-green-600 text-xs font-bold uppercase tracking-wider">
-                        Verified
-                      </span>
+                      {isFullyVerified ? (
+                        <VerifiedBadge verified size="md" />
+                      ) : (
+                        <span className="px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                          {emailVerified || phoneVerified ? "Partially verified" : "Unverified"}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -277,7 +286,9 @@ const Profile = () => {
                       </div>
                       <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
                         <span className="text-muted-foreground font-medium">Profile Status</span>
-                        <span className="font-bold text-green-500">Active</span>
+                        <span className={`font-bold ${isFullyVerified ? "text-green-500" : "text-amber-600"}`}>
+                          {isFullyVerified ? "Verified & active" : "Complete verification"}
+                        </span>
                       </div>
                       <div className="p-4 rounded-2xl bg-muted/30 border border-muted-foreground/10 flex justify-between items-center group hover:bg-white/50 transition-colors">
                         <span className="text-muted-foreground font-medium">Biodata</span>
@@ -299,7 +310,13 @@ const Profile = () => {
               {[
                 { title: "Browse Profiles", desc: "Find your match", icon: Search, color: "text-blue-500", action: () => navigate("/search") },
                 { title: "Likes & Interests", desc: "View your connections", icon: Heart, color: "text-red-500", action: () => navigate("/search") },
-                { title: "Verify Account", desc: "Get verified badge", icon: Shield, color: "text-purple-500", action: () => navigate("/verification") },
+                {
+                  title: isFullyVerified ? "Verification" : "Verify Account",
+                  desc: isFullyVerified ? "Email & phone verified" : "Required to browse & appear in search",
+                  icon: Shield,
+                  color: "text-purple-500",
+                  action: () => navigate("/verification"),
+                },
                 { title: "Upgrade Plan", desc: "Get premium access", icon: Star, color: "text-yellow-500", action: () => navigate("/premium-plans") },
               ].map((item, i) => (
                 <button

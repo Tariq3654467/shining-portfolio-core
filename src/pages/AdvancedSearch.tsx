@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MapPin, Briefcase, GraduationCap, ListFilter as Filter, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useVerification } from "@/hooks/useVerification";
+import { VerificationRequiredBanner } from "@/components/VerificationRequiredBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -51,7 +55,34 @@ const castes = [
   "Newar Brahmins", "Shrestha", "Maithil Brahmin", "Rajput", "Kayastha", "Yadav", "Other",
 ];
 
+const OTHER_SPECIFY_LABEL = "If other, please specify";
+
+function OtherSpecifyInput({
+  show,
+  value,
+  onChange,
+}: {
+  show: boolean;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  if (!show) return null;
+  return (
+    <div className="mt-1.5">
+      <label className="text-xs font-medium text-muted-foreground">{OTHER_SPECIFY_LABEL}</label>
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Please specify"
+        className="mt-1"
+      />
+    </div>
+  );
+}
+
 const AdvancedSearch = () => {
+  const { user, loading: authLoading } = useAuth();
+  const { isFullyVerified, loading: verificationLoading } = useVerification();
   const [keyword, setKeyword] = useState("");
   const [gender, setGender] = useState("Any");
   const [ageRange, setAgeRange] = useState<[number, number]>([21, 40]);
@@ -66,6 +97,12 @@ const AdvancedSearch = () => {
   const [country, setCountry] = useState("Any");
   const [location, setLocation] = useState("Any");
   const [caste, setCaste] = useState("Any");
+  const [educationLevelOther, setEducationLevelOther] = useState("");
+  const [fieldStudyOther, setFieldStudyOther] = useState("");
+  const [careerOther, setCareerOther] = useState("");
+  const [religionOther, setReligionOther] = useState("");
+  const [casteOther, setCasteOther] = useState("");
+  const [locationOther, setLocationOther] = useState("");
 
   const filtered = useMemo(() => {
     return allMembers.filter((m) => {
@@ -99,6 +136,12 @@ const AdvancedSearch = () => {
     setCountry("Any");
     setLocation("Any");
     setCaste("Any");
+    setEducationLevelOther("");
+    setFieldStudyOther("");
+    setCareerOther("");
+    setReligionOther("");
+    setCasteOther("");
+    setLocationOther("");
   };
 
   const activeFilters = [
@@ -142,12 +185,23 @@ const AdvancedSearch = () => {
 
       <div>
         <label className="text-xs font-medium text-muted-foreground">Education Level</label>
-        <Select value={educationLevel} onValueChange={setEducationLevel}>
+        <Select
+          value={educationLevel}
+          onValueChange={(v) => {
+            setEducationLevel(v);
+            if (v !== "Other") setEducationLevelOther("");
+          }}
+        >
           <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
           <SelectContent>
             {EDUCATION_LEVELS.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
           </SelectContent>
         </Select>
+        <OtherSpecifyInput
+          show={educationLevel === "Other"}
+          value={educationLevelOther}
+          onChange={setEducationLevelOther}
+        />
       </div>
 
       <TaxonomySelect
@@ -161,6 +215,9 @@ const AdvancedSearch = () => {
           setFieldRole(FIELD_CATEGORY_ANY);
         }}
         onRoleChange={(v) => setFieldRole(v || FIELD_CATEGORY_ANY)}
+        otherText={fieldStudyOther}
+        onOtherChange={setFieldStudyOther}
+        otherLabel={OTHER_SPECIFY_LABEL}
         allowAny
       />
 
@@ -175,34 +232,61 @@ const AdvancedSearch = () => {
           setCareerRole(CAREER_CATEGORY_ANY);
         }}
         onRoleChange={(v) => setCareerRole(v || CAREER_CATEGORY_ANY)}
+        otherText={careerOther}
+        onOtherChange={setCareerOther}
+        otherLabel={OTHER_SPECIFY_LABEL}
         allowAny
       />
 
       {[
-        { label: "Religion", value: religion, setter: setReligion, options: religions },
+        { label: "Religion", value: religion, setter: setReligion, options: religions, other: religionOther, setOther: setReligionOther },
         { label: "Marital Status", value: marital, setter: setMarital, options: maritalStatuses },
         { label: "Country", value: country, setter: setCountry, options: countries },
-        { label: "Caste / Ethnicity", value: caste, setter: setCaste, options: castes },
+        { label: "Caste / Ethnicity", value: caste, setter: setCaste, options: castes, other: casteOther, setOther: setCasteOther },
       ].map((f) => (
         <div key={f.label}>
           <label className="text-xs font-medium text-muted-foreground">{f.label}</label>
-          <Select value={f.value} onValueChange={f.setter}>
+          <Select
+            value={f.value}
+            onValueChange={(v) => {
+              f.setter(v);
+              if (f.setOther && v !== "Other") f.setOther("");
+            }}
+          >
             <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
             <SelectContent>
               {f.options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
             </SelectContent>
           </Select>
+          {f.setOther && (
+            <OtherSpecifyInput
+              show={f.value === "Other"}
+              value={f.other ?? ""}
+              onChange={f.setOther}
+            />
+          )}
         </div>
       ))}
 
       <div>
         <label className="text-xs font-medium text-muted-foreground">Area of Residence</label>
-        <Select value={location} onValueChange={setLocation}>
+        <Select
+          value={location}
+          onValueChange={(v) => {
+            setLocation(v);
+            if (v !== "Other") setLocationOther("");
+          }}
+        >
           <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
           <SelectContent>
             {RESIDENCE_AREAS.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
           </SelectContent>
         </Select>
+        <OtherSpecifyInput
+          show={location === "Other"}
+          value={locationOther}
+          onChange={setLocationOther}
+        />
       </div>
 
       <Button variant="outline" className="w-full" onClick={reset}>Reset Filters</Button>
@@ -217,6 +301,20 @@ const AdvancedSearch = () => {
           <p className="text-muted-foreground mt-2">Find your ideal match using structured education and career filters</p>
         </div>
 
+        {!user && !authLoading && (
+          <div className="max-w-lg mx-auto text-center rounded-xl border bg-card p-8 mb-8">
+            <p className="text-muted-foreground mb-4">Log in and verify your account to search verified members.</p>
+            <Button asChild className="gradient-primary text-primary-foreground">
+              <Link to="/login">Log in</Link>
+            </Button>
+          </div>
+        )}
+
+        {user && !authLoading && !verificationLoading && !isFullyVerified && (
+          <VerificationRequiredBanner feature="use advanced search and browse verified members" />
+        )}
+
+        {user && isFullyVerified && !verificationLoading && (
         <div className="grid lg:grid-cols-[300px_1fr] gap-6">
           <aside className="hidden lg:block bg-card border rounded-xl p-5 h-fit sticky top-20">
             <h3 className="font-heading font-semibold mb-4">Filters</h3>
@@ -284,6 +382,7 @@ const AdvancedSearch = () => {
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

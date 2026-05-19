@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,74 +8,21 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Check, Mail, Phone, Loader as Loader2, CircleCheck as CheckCircle } from "lucide-react";
-
-type VerificationRecord = {
-  id: string;
-  user_id: string;
-  email_verified: boolean | null;
-  phone_verified: boolean | null;
-  phone_number: string | null;
-  verification_code?: string | null;
-  code_expires_at?: string | null;
-  email_otp_code?: string | null;
-  email_otp_expires_at?: string | null;
-  phone_otp_code?: string | null;
-  phone_otp_expires_at?: string | null;
-};
-
-function sixDigitCode(): string {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function showDevOtp(code: string, label: string) {
-  if (import.meta.env.DEV || import.meta.env.VITE_DEV_SHOW_OTP === "true") {
-    toast.info(`${label}: ${code}`, { duration: 120_000 });
-  }
-}
-
-async function ensureVerificationRecord(userId: string): Promise<VerificationRecord> {
-  const { data: existing, error: selErr } = await supabase
-    .from("verification_records")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (selErr) throw selErr;
-  if (existing) return existing as VerificationRecord;
-
-  const { data: inserted, error: insErr } = await supabase
-    .from("verification_records")
-    .insert({ user_id: userId })
-    .select()
-    .single();
-
-  if (insErr) {
-    if (insErr.code === "23505") {
-      const { data: again, error: rErr } = await supabase
-        .from("verification_records")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
-      if (rErr) throw rErr;
-      return again as VerificationRecord;
-    }
-    throw insErr;
-  }
-
-  return inserted as VerificationRecord;
-}
-
-async function fetchVerificationRow(userId: string): Promise<VerificationRecord | null> {
-  const { data, error } = await supabase.from("verification_records").select("*").eq("user_id", userId).maybeSingle();
-  if (error) throw error;
-  return (data as VerificationRecord) ?? null;
-}
+import { useAuth } from "@/hooks/useAuth";
+import { useVerification } from "@/hooks/useVerification";
+import {
+  sixDigitCode,
+  showDevOtp,
+  ensureVerificationRecord,
+  fetchVerificationRecord,
+} from "@/lib/verification";
 
 const Verification = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [verification, setVerification] = useState<VerificationRecord | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
+  const { emailVerified, phoneVerified, isFullyVerified, refresh, record, loading: verificationLoading } =
+    useVerification();
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailCode, setEmailCode] = useState("");
   const [phoneCode, setPhoneCode] = useState("");
@@ -85,39 +31,17 @@ const Verification = () => {
   const [verifyingEmail, setVerifyingEmail] = useState(false);
   const [verifyingPhone, setVerifyingPhone] = useState(false);
 
-  const refreshVerification = useCallback(async (userId: string) => {
-    const row = await fetchVerificationRow(userId);
-    setVerification(row);
-    if (row?.phone_number) setPhoneNumber(row.phone_number);
-  }, []);
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/login");
+    }
+  }, [authLoading, user, navigate]);
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        const { data: { user: u } } = await supabase.auth.getUser();
-        if (!u) {
-          navigate("/login");
-          return;
-        }
-        setUser(u);
+    if (record?.phone_number) setPhoneNumber(record.phone_number);
+  }, [record?.phone_number]);
 
-        await ensureVerificationRecord(u.id);
-
-        if (u.email_confirmed_at) {
-          await supabase.from("verification_records").update({ email_verified: true }).eq("user_id", u.id);
-        }
-
-        await refreshVerification(u.id);
-      } catch (e: unknown) {
-        console.error(e);
-        const msg = e instanceof Error ? e.message : "Failed to load verification";
-        toast.error(msg);
-      } finally {
-        setLoading(false);
-      }
-    };
-    init();
-  }, [navigate, refreshVerification]);
+  const loading = authLoading || verificationLoading;
 
   const sendEmailVerification = async () => {
     if (!user) return;
@@ -155,13 +79,13 @@ const Verification = () => {
       } else {
         toast.warning(
           fnError?.message ??
-            "Email was not sent (deploy send-verification-email and set RESEND_API_KEY on the project, or use dev OTP)."
+            "Email was not sent. Deploy send-verification-email and set RESEND_API_KEY, or use dev OTP."
         );
         showDevOtp(code, "Email verification code");
       }
 
       setEmailCode("");
-      await refreshVerification(user.id);
+      await refresh();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Failed to send code";
       toast.error(msg);
@@ -180,18 +104,18 @@ const Verification = () => {
 
     setVerifyingEmail(true);
     try {
-      const record = await fetchVerificationRow(user.id);
-      if (!record) {
+      const recordRow = await fetchVerificationRecord(user.id);
+      if (!recordRow) {
         toast.error("No verification record found");
         return;
       }
 
-      if (record.email_otp_code !== trimmed) {
+      if (recordRow.email_otp_code !== trimmed) {
         toast.error("Invalid verification code");
         return;
       }
 
-      if (!record.email_otp_expires_at || new Date(record.email_otp_expires_at) < new Date()) {
+      if (!recordRow.email_otp_expires_at || new Date(recordRow.email_otp_expires_at) < new Date()) {
         toast.error("Code expired. Request a new one.");
         return;
       }
@@ -209,7 +133,7 @@ const Verification = () => {
 
       toast.success("Email verified successfully!");
       setEmailCode("");
-      await refreshVerification(user.id);
+      await refresh();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Verification failed";
       toast.error(msg);
@@ -223,7 +147,7 @@ const Verification = () => {
 
     const normalized = phoneNumber.trim();
     if (!normalized || normalized.length < 8) {
-      toast.error("Please enter a valid phone number");
+      toast.error("Please enter a valid phone number with country code (e.g. +9779876543210)");
       return;
     }
 
@@ -245,14 +169,29 @@ const Verification = () => {
 
       if (error) throw error;
 
-      toast.success("Phone verification code generated.");
-      toast.message(
-        "SMS is not wired yet — add Twilio (or similar) via an Edge Function for real texts. Dev mode shows the code when enabled."
-      );
-      showDevOtp(code, "Phone verification code");
+      const { data: fnResult, error: fnError } = await supabase.functions.invoke("send-verification-sms", {
+        body: { code, phoneNumber: normalized },
+      });
+
+      const sent =
+        !fnError &&
+        fnResult &&
+        typeof fnResult === "object" &&
+        "sent" in fnResult &&
+        (fnResult as { sent?: boolean }).sent === true;
+
+      if (sent) {
+        toast.success(`We sent a 6-digit code to ${normalized}`);
+      } else {
+        toast.warning(
+          fnError?.message ??
+            "SMS was not sent. Deploy send-verification-sms and set Twilio secrets, or use dev OTP."
+        );
+        showDevOtp(code, "Phone verification code");
+      }
 
       setPhoneCode("");
-      await refreshVerification(user.id);
+      await refresh();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Failed to send code";
       toast.error(msg);
@@ -271,18 +210,18 @@ const Verification = () => {
 
     setVerifyingPhone(true);
     try {
-      const record = await fetchVerificationRow(user.id);
-      if (!record) {
+      const recordRow = await fetchVerificationRecord(user.id);
+      if (!recordRow) {
         toast.error("No verification record found");
         return;
       }
 
-      if (record.phone_otp_code !== trimmed) {
+      if (recordRow.phone_otp_code !== trimmed) {
         toast.error("Invalid verification code");
         return;
       }
 
-      if (!record.phone_otp_expires_at || new Date(record.phone_otp_expires_at) < new Date()) {
+      if (!recordRow.phone_otp_expires_at || new Date(recordRow.phone_otp_expires_at) < new Date()) {
         toast.error("Code expired. Request a new one.");
         return;
       }
@@ -300,7 +239,7 @@ const Verification = () => {
 
       toast.success("Phone verified successfully!");
       setPhoneCode("");
-      await refreshVerification(user.id);
+      await refresh();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Verification failed";
       toast.error(msg);
@@ -317,18 +256,30 @@ const Verification = () => {
     );
   }
 
-  const emailVerified = Boolean(user?.email_confirmed_at || verification?.email_verified);
-  const phoneVerified = Boolean(verification?.phone_verified);
-
   return (
     <div className="min-h-screen py-12 px-4">
-      <div className="max-w-2xl mx-auto">
+      <motion.div className="max-w-2xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-heading font-bold">Account Verification</h1>
-          <p className="text-muted-foreground mt-2">Complete verification to unlock all platform features</p>
+          <p className="text-muted-foreground mt-2">
+            Verify email and phone to browse members and appear in search results
+          </p>
         </motion.div>
 
-        {/* Verification Status */}
+        {isFullyVerified && (
+          <Card className="mb-8 border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-900">
+            <CardContent className="pt-6 flex items-center gap-3">
+              <CheckCircle className="h-8 w-8 text-green-600 shrink-0" />
+              <motion.div>
+                <p className="font-semibold text-green-900 dark:text-green-100">You are fully verified</p>
+                <p className="text-sm text-green-800 dark:text-green-200 mt-1">
+                  Your profile is visible to other verified members in Active Members and search.
+                </p>
+              </motion.div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid sm:grid-cols-2 gap-4 mb-8">
           <div className="text-center p-4 bg-card border rounded-lg">
             <div className="flex justify-center mb-2">
@@ -349,13 +300,13 @@ const Verification = () => {
           </div>
 
           <div className="text-center p-4 bg-card border rounded-lg">
-            <div className="flex justify-center mb-2">
+            <motion.div className="flex justify-center mb-2">
               {phoneVerified ? (
                 <CheckCircle className="h-8 w-8 text-green-500" />
               ) : (
                 <Phone className="h-8 w-8 text-muted-foreground" />
               )}
-            </div>
+            </motion.div>
             <p className="font-semibold">Phone</p>
             {phoneVerified ? (
               <Badge className="mt-2 bg-green-500 text-white">Verified</Badge>
@@ -367,7 +318,6 @@ const Verification = () => {
           </div>
         </div>
 
-        {/* Email Verification */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
           <Card className="mb-6">
             <CardHeader>
@@ -389,23 +339,19 @@ const Verification = () => {
                   <Input value={user?.email ?? ""} readOnly className="bg-muted/50" />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  You will receive a 6-digit code. If emails are not set up yet, enable dev hints with{" "}
-                  <code className="text-xs bg-muted px-1 rounded">VITE_DEV_SHOW_OTP=true</code> or run locally (
-                  <code className="text-xs bg-muted px-1 rounded">npm run dev</code>).
+                  See <code className="text-xs bg-muted px-1 rounded">docs/VERIFICATION.md</code> for Resend setup. Dev
+                  OTP: <code className="text-xs bg-muted px-1 rounded">VITE_DEV_SHOW_OTP=true</code>.
                 </p>
-                <div className="flex gap-2">
-                  <Button onClick={sendEmailVerification} disabled={sendingEmail} className="flex-1">
-                    {sendingEmail && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                    Send Code
-                  </Button>
-                </div>
+                <Button onClick={sendEmailVerification} disabled={sendingEmail} className="w-full">
+                  {sendingEmail && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  Send Code
+                </Button>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Enter verification code</label>
-                  <div className="flex gap-2">
+                  <motion.div className="flex gap-2">
                     <Input
                       placeholder="123456"
                       inputMode="numeric"
-                      pattern="[0-9]*"
                       value={emailCode}
                       onChange={(e) => setEmailCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                       maxLength={6}
@@ -414,14 +360,13 @@ const Verification = () => {
                       {verifyingEmail && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                       Verify
                     </Button>
-                  </div>
+                  </motion.div>
                 </div>
               </CardContent>
             )}
           </Card>
         </motion.div>
 
-        {/* Phone Verification */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           <Card className="mb-6">
             <CardHeader>
@@ -432,7 +377,7 @@ const Verification = () => {
                     Phone Verification
                   </CardTitle>
                   <CardDescription>
-                    {phoneVerified ? verification?.phone_number : "Add your phone number"}
+                    {phoneVerified ? record?.phone_number : "Add your phone number with country code"}
                   </CardDescription>
                 </div>
                 {phoneVerified && <CheckCircle className="h-6 w-6 text-green-500 shrink-0" />}
@@ -441,8 +386,7 @@ const Verification = () => {
             {!phoneVerified && (
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Enter your number including country code (e.g. +9779876543210). SMS sending requires provider setup;
-                  dev mode shows the code when enabled.
+                  Use international format (e.g. +9779876543210). SMS uses Twilio when configured in Supabase secrets.
                 </p>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Phone Number</label>
@@ -463,7 +407,6 @@ const Verification = () => {
                     <Input
                       placeholder="123456"
                       inputMode="numeric"
-                      pattern="[0-9]*"
                       value={phoneCode}
                       onChange={(e) => setPhoneCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                       maxLength={6}
@@ -479,20 +422,29 @@ const Verification = () => {
           </Card>
         </motion.div>
 
-        {/* Benefits */}
-        {(emailVerified || phoneVerified) && (
+        {!isFullyVerified && (
+          <Card className="mb-6 border-muted">
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground">
+                Until both email and phone are verified, you cannot browse other members and your biodata will not
+                appear in their search results.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {(emailVerified || phoneVerified) && !isFullyVerified && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
             <Card className="bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
                   <div>
-                    <p className="font-semibold text-green-900 dark:text-green-100">Verification Benefits</p>
+                    <p className="font-semibold text-green-900 dark:text-green-100">Almost there</p>
                     <ul className="text-sm text-green-800 dark:text-green-200 mt-2 space-y-1">
-                      <li>Full access to all platform features</li>
-                      <li>Appear as verified member in search results</li>
-                      <li>Increased profile visibility</li>
-                      <li>Build trust with potential matches</li>
+                      <li>Complete both email and phone to unlock browsing</li>
+                      <li>Verified badge on your profile</li>
+                      <li>Visible to other members in search</li>
                     </ul>
                   </div>
                 </div>
@@ -506,7 +458,7 @@ const Verification = () => {
             Back to Dashboard
           </Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
