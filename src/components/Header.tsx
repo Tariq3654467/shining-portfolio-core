@@ -29,8 +29,8 @@ const Header = () => {
   };
  
   return (
-    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b">
-      <div className="container flex items-center justify-between h-16 gap-3">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/70 shadow-sm">
+      <div className="container flex items-center justify-between h-16 gap-3 px-4 mx-auto">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img
@@ -38,7 +38,7 @@ const Header = () => {
             alt="eBihe logo"
             className="h-10 w-10 rounded-full object-cover border border-primary/20"
           />
-          <span className="text-lg md:text-xl font-heading font-bold text-foreground leading-none">
+          <span className="text-lg md:text-xl font-heading font-semibold text-foreground leading-none">
             eBihe<span className="text-primary">.com</span>
           </span>
         </Link>

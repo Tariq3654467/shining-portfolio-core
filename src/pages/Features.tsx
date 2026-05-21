@@ -35,7 +35,7 @@ const Features = () => {
     {
       icon: Shield,
       title: "Verified Profiles",
-      description: "All members are verified through email and phone verification for a safe and trustworthy community.",
+      description: "All members are verified through email for a safe and trustworthy community.",
       color: "from-yellow-500 to-orange-500",
     },
     {
@@ -62,8 +62,8 @@ const Features = () => {
     {
       step: 3,
       title: "Verify Identity",
-      description: "Complete email and phone verification to become a verified member.",
-      details: ["Verify email address", "Verify phone number", "Gain full access to all features"],
+      description: "Complete email verification to become a verified member.",
+      details: ["Verify email address", "Gain full access to all features"],
     },
     {
       step: 4,

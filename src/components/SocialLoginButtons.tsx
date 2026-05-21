@@ -25,6 +25,17 @@ const providers: { id: OAuthProvider; label: string; icon: ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    id: "tiktok",
+    label: "TikTok",
+    icon: (
+      <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden>
+        <path fill="#010101" d="M16.5 6.5a4.2 4.2 0 0 1-1.4-1.7v7.7a4.8 4.8 0 0 1-4.8-4.8H9.8a6.3 6.3 0 0 0 6.3 6.3 6.3 6.3 0 0 0 6.3-6.3V5.4h-5.9v1.1Z" />
+        <path fill="#25F4EE" d="M12.5 5.7v3.3c.7.2 1.4.2 2 .2v-3.1c-.6 0-1.3-.1-2-.4Z" opacity="0.8" />
+        <path fill="#FE2C55" d="M16.8 5.2v-1.5c-2.3-.7-4.4.4-5.8 2.1v1.4c1.3-1.6 3.3-2.1 5.8-2Z" opacity="0.9" />
+      </svg>
+    ),
+  },
 ];
 
 export function SocialLoginButtons() {

@@ -198,7 +198,7 @@ const Dashboard = () => {
               ) : isFullyVerified ? (
                 <>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Your email and phone are verified. Other members can find you in search and browse your profile.
+                    Your email is verified. Other members can find you in search and browse your profile.
                   </p>
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-green-500" />
@@ -208,11 +208,10 @@ const Dashboard = () => {
               ) : (
                 <>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Complete verification to browse members and appear in search results.
+                    Complete email verification to browse members and appear in search results.
                   </p>
                   <ul className="text-xs text-muted-foreground space-y-1 mb-4">
                     <li>Email: {emailVerified ? "Verified" : "Pending"}</li>
-                    <li>Phone: {phoneVerified ? "Verified" : "Pending"}</li>
                   </ul>
                   <Link to="/verification">
                     <Button size="sm" className="w-full gradient-primary text-primary-foreground rounded-xl">

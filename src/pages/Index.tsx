@@ -46,14 +46,14 @@ const Index = () => {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden py-16">
         <div className="absolute inset-0 overflow-hidden">
           {heroSlides.map((slide, idx) => (
             <motion.img
               key={idx}
               src={slide.img}
               alt={slide.alt}
-              className="absolute inset-0 w-full h-full object-cover object-[center_22%]"
+              className="absolute inset-0 w-full h-full object-cover object-[center_35%]"
               width={1920}
               height={1080}
               initial={{ opacity: 0 }}
@@ -94,9 +94,9 @@ const Index = () => {
           <ChevronRight className="h-6 w-6" />
         </button>
 
-        <div className="container relative z-10 grid lg:grid-cols-2 gap-10 py-20">
+        <div className="container relative z-10 grid lg:grid-cols-2 gap-10 py-24">
           <motion.div initial="hidden" animate="visible" className="flex flex-col justify-center">
-            <motion.h1 variants={fadeUp} custom={0} className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground leading-tight">
+            <motion.h1 variants={fadeUp} custom={0} className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-primary-foreground leading-tight">
               Find Life Partner <span className="text-gradient-primary bg-clip-text" style={{ WebkitTextFillColor: "unset", color: "hsl(346, 90%, 70%)" }}>Effortlessly</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={1} className="mt-4 text-lg text-primary-foreground/80 max-w-md">
@@ -116,7 +116,7 @@ const Index = () => {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-card rounded-2xl shadow-2xl p-8 max-w-md mx-auto lg:mx-0 lg:ml-auto"
+            className="bg-card rounded-2xl shadow-2xl p-8 max-w-md mx-auto mt-16 lg:mt-0 lg:mx-0 lg:ml-auto"
           >
             <h2 className="text-2xl font-heading font-bold text-center text-gradient-primary mb-1">Create Your Account</h2>
             <p className="text-sm text-muted-foreground text-center mb-6">Fill out the form to get started.</p>

@@ -35,7 +35,7 @@ export function isPhoneVerified(record: VerificationRecord | null): boolean {
 }
 
 export function isFullyVerified(user: User | null, record: VerificationRecord | null): boolean {
-  return isEmailVerified(user, record) && isPhoneVerified(record);
+  return isEmailVerified(user, record);
 }
 
 export async function ensureVerificationRecord(userId: string): Promise<VerificationRecord> {

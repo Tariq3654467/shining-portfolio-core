@@ -312,7 +312,7 @@ const Profile = () => {
                 { title: "Likes & Interests", desc: "View your connections", icon: Heart, color: "text-red-500", action: () => navigate("/search") },
                 {
                   title: isFullyVerified ? "Verification" : "Verify Account",
-                  desc: isFullyVerified ? "Email & phone verified" : "Required to browse & appear in search",
+                  desc: isFullyVerified ? "Email verified" : "Required to browse & appear in search",
                   icon: Shield,
                   color: "text-purple-500",
                   action: () => navigate("/verification"),

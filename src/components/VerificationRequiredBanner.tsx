@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShieldAlert, Mail, Phone } from "lucide-react";
+import { ShieldAlert, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useVerification } from "@/hooks/useVerification";
 
@@ -10,7 +10,7 @@ type VerificationRequiredBannerProps = {
 export function VerificationRequiredBanner({
   feature = "browse members and appear in search results",
 }: VerificationRequiredBannerProps) {
-  const { loading, isFullyVerified, emailVerified, phoneVerified } = useVerification();
+  const { loading, isFullyVerified, emailVerified } = useVerification();
 
   if (loading || isFullyVerified) return null;
 
@@ -21,16 +21,12 @@ export function VerificationRequiredBanner({
         Verification required
       </h2>
       <p className="text-sm text-amber-900/80 dark:text-amber-200/80 mt-2">
-        Complete email and phone verification to {feature}.
+        Complete email verification to {feature}.
       </p>
       <ul className="flex flex-wrap justify-center gap-3 mt-4 text-xs font-medium">
         <li className={emailVerified ? "text-green-700" : "text-amber-800"}>
           <Mail className="inline h-3.5 w-3.5 mr-1" />
           Email {emailVerified ? "✓" : "pending"}
-        </li>
-        <li className={phoneVerified ? "text-green-700" : "text-amber-800"}>
-          <Phone className="inline h-3.5 w-3.5 mr-1" />
-          Phone {phoneVerified ? "✓" : "pending"}
         </li>
       </ul>
       <Button asChild className="mt-5 gradient-primary text-primary-foreground">

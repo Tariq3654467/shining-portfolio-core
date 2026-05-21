@@ -179,9 +179,16 @@ const Register = () => {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          <p className="text-xs text-muted-foreground -mt-2">
-            Must be 8+ chars with one uppercase, one number, and one special character.
-          </p>
+          <div className="text-xs text-muted-foreground -mt-2 space-y-1">
+            <p>Password must include:</p>
+            <ul className="list-disc list-inside">
+              <li>Minimum 8 characters</li>
+              <li>One uppercase letter</li>
+              <li>One lowercase letter</li>
+              <li>One number</li>
+              <li>One special character</li>
+            </ul>
+          </div>
 
           <p className="text-xs text-muted-foreground">
             By signing up you agree to our <Link to="/" className="text-primary underline">terms and conditions</Link>.
