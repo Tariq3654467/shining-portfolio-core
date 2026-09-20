@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 
-export type OAuthProvider = "google" | "facebook" | "tiktok";
+export type OAuthProvider = "google" | "facebook" | "linkedin_oidc";
 
 /** Must match Supabase → Authentication → URL Configuration → Redirect URLs */
 function getOAuthRedirectUrl() {

@@ -14,7 +14,7 @@ import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { TaxonomySelect } from "@/components/TaxonomySelect";
 import { CAREER_TAXONOMY, formatOccupation } from "@/constants/careerTaxonomy";
 import { EDUCATION_LEVELS, FIELD_OF_STUDY_TAXONOMY, formatFieldOfStudy } from "@/constants/educationTaxonomy";
-import { RESIDENCE_AREAS } from "@/constants/locationOptions";
+import { LOCATION_COUNTRIES, LOCATION_HIERARCHY } from "@/constants/locationOptions";
 
 type Field = {
   key: string;
@@ -105,9 +105,9 @@ const steps: { title: string; description: string; fields: Field[] }[] = [
     title: "Location Details",
     description: "Where are you based?",
     fields: [
-      { key: "country", label: "Country", type: "select", options: ["Nepal","India","USA","UK","Australia","Canada","Other"] },
-      { key: "areaOfResidence", label: "Area of Residence (City/District)", type: "select", options: [...RESIDENCE_AREAS.filter((a) => a !== "Any")] },
-      { key: "areaOfResidenceOther", label: "Please specify city/area", type: "text", optional: true },
+      { key: "country", label: "Country", type: "select", options: LOCATION_COUNTRIES },
+      { key: "stateProvince", label: "State / Province", type: "select", options: [] },
+      { key: "city", label: "City", type: "select", options: [] },
       { key: "currentAddress", label: "Current Address", optional: true },
       { key: "permanentAddress", label: "Permanent Address", optional: true },
       { key: "relocate", label: "Willing to Relocate", type: "select", options: ["Yes","No","Maybe"] },
@@ -208,6 +208,12 @@ const Biodata = () => {
 
   const update = (k: string, v: string) => setData((p) => ({ ...p, [k]: v }));
   const togglePrivate = (k: string) => setPrivateFields((p) => ({ ...p, [k]: !p[k] }));
+  const statesForCountry = data.country
+    ? Object.keys(LOCATION_HIERARCHY[data.country as keyof typeof LOCATION_HIERARCHY] || {})
+    : [];
+  const citiesForState = data.country && data.stateProvince
+    ? [...((LOCATION_HIERARCHY[data.country as keyof typeof LOCATION_HIERARCHY] as Record<string, readonly string[]> | undefined)?.[data.stateProvince] || [])]
+    : [];
 
   const validateStep = () => {
     for (const f of current.fields) {
@@ -260,10 +266,7 @@ const Biodata = () => {
           data.fieldOfStudy,
           data.fieldOfStudyOther
         ),
-        areaOfResidence:
-          data.areaOfResidence === "Other"
-            ? data.areaOfResidenceOther?.trim() || "Other"
-            : data.areaOfResidence,
+        areaOfResidence: [data.city, data.stateProvince].filter(Boolean).join(", "),
       };
 
       const bioDataPayload = {
@@ -311,7 +314,8 @@ const Biodata = () => {
       return null;
     }
 
-    const hasOtherOption = f.type === "select" && f.options?.includes("Other");
+    const dynamicOptions = f.key === "stateProvince" ? statesForCountry : f.key === "city" ? citiesForState : f.options;
+    const hasOtherOption = dynamicOptions?.includes("Other");
     const explicitOtherFieldKey = `${f.key}Other`;
     const hasDedicatedOtherField = current.fields.some((field) => field.key === explicitOtherFieldKey);
     const needsInlineCustomField = hasOtherOption && data[f.key] === "Other" && !hasDedicatedOtherField;
@@ -335,10 +339,21 @@ const Biodata = () => {
         </div>
         {f.type === "select" ? (
           <>
-            <Select value={data[f.key] || ""} onValueChange={(v) => update(f.key, v)}>
+            <Select
+              value={data[f.key] || ""}
+              onValueChange={(v) => {
+                update(f.key, v);
+                if (f.key === "country") {
+                  update("stateProvince", "");
+                  update("city", "");
+                } else if (f.key === "stateProvince") {
+                  update("city", "");
+                }
+              }}
+            >
               <SelectTrigger><SelectValue placeholder={`Select ${f.label.toLowerCase()}`} /></SelectTrigger>
               <SelectContent>
-                {f.options!.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                {dynamicOptions?.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
               </SelectContent>
             </Select>
             {needsInlineCustomField && (

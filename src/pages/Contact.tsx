@@ -1,11 +1,32 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
-const Contact = () => (
-  <div className="py-16">
+const Contact = () => {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [submitting, setSubmitting] = useState(false);
+
+  const update = (key: keyof typeof form, value: string) => setForm((previous) => ({ ...previous, [key]: value }));
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSubmitting(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase.from("feedback").insert({ ...form, user_id: user?.id ?? null });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Could not send feedback");
+      return;
+    }
+    setForm({ name: "", email: "", subject: "", message: "" });
+    toast.success("Thank you for your feedback");
+  };
+
+  return <div className="py-16">
     <div className="container max-w-5xl">
       <h1 className="text-3xl md:text-4xl font-heading font-bold text-center">Contact Us</h1>
       <p className="text-muted-foreground text-center mt-2 mb-12">We'd love to hear from you</p>
@@ -36,20 +57,19 @@ const Contact = () => (
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="bg-card border rounded-2xl p-8 space-y-4"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={submit}
         >
           <div className="grid grid-cols-2 gap-4">
-            <Input placeholder="First Name" />
-            <Input placeholder="Last Name" />
+            <Input placeholder="Name" value={form.name} onChange={(e) => update("name", e.target.value)} />
+            <Input type="email" placeholder="Email" value={form.email} onChange={(e) => update("email", e.target.value)} />
           </div>
-          <Input type="email" placeholder="Email" />
-          <Input placeholder="Subject" />
-          <Textarea placeholder="Your message..." rows={5} />
-          <Button className="w-full gradient-primary text-primary-foreground">Send Message</Button>
+          <Input placeholder="Subject" required value={form.subject} onChange={(e) => update("subject", e.target.value)} />
+          <Textarea placeholder="Your message..." required rows={5} value={form.message} onChange={(e) => update("message", e.target.value)} />
+          <Button type="submit" disabled={submitting} className="w-full gradient-primary text-primary-foreground">{submitting ? "Sending..." : "Send Feedback"}</Button>
         </motion.form>
       </div>
     </div>
-  </div>
-);
+  </div>;
+};
 
 export default Contact;

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { ArrowLeft, User, Briefcase, MapPin } from "lucide-react";
+import { ArrowLeft, User, Briefcase, MapPin, Heart, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { sanitizePayloadForViewer } from "@/lib/publicBiodata";
@@ -21,6 +21,12 @@ const MemberProfile = () => {
   const [row, setRow] = useState<Row | null>(null);
   const [profile, setProfile] = useState<{ first_name?: string | null; last_name?: string | null; gender?: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [recommendationCount, setRecommendationCount] = useState(0);
+  const [recommended, setRecommended] = useState(false);
+  const [interestStatus, setInterestStatus] = useState<string | null>(null);
+  const [incomingInterestStatus, setIncomingInterestStatus] = useState<string | null>(null);
+  const [interactionLoading, setInteractionLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -31,7 +37,8 @@ const MemberProfile = () => {
 
       setLoading(true);
       try {
-        const [{ data: bio, error: bioErr }, { data: prof }] = await Promise.all([
+        const [{ data: { user } }, { data: bio, error: bioErr }, { data: prof }] = await Promise.all([
+          supabase.auth.getUser(),
           supabase
             .from("biodatas")
             .select("user_id, payload, private_fields, profile_picture_url")
@@ -49,6 +56,18 @@ const MemberProfile = () => {
 
         setRow(bio as Row);
         setProfile(prof);
+        setCurrentUserId(user?.id ?? null);
+
+        const [{ count: recommendationCountResult }, { data: ownRecommendation }, { data: interest }, { data: incomingInterest }] = await Promise.all([
+          supabase.from("profile_recommendations").select("id", { count: "exact", head: true }).eq("profile_user_id", userId),
+          user ? supabase.from("profile_recommendations").select("id").eq("profile_user_id", userId).eq("recommender_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
+          user ? supabase.from("profile_interests").select("status").eq("sender_id", user.id).eq("recipient_id", userId).maybeSingle() : Promise.resolve({ data: null }),
+          user ? supabase.from("profile_interests").select("status").eq("sender_id", userId).eq("recipient_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
+        ]);
+        setRecommendationCount(recommendationCountResult ?? 0);
+        setRecommended(Boolean(ownRecommendation));
+        setInterestStatus(interest?.status ?? null);
+        setIncomingInterestStatus(incomingInterest?.status ?? null);
       } catch (e: unknown) {
         console.error(e);
         toast.error(e instanceof Error ? e.message : "Could not load profile");
@@ -69,6 +88,48 @@ const MemberProfile = () => {
   }
 
   if (!row) return null;
+
+  const canInteract = Boolean(currentUserId && currentUserId !== userId);
+  const toggleRecommendation = async () => {
+    if (!currentUserId || !userId) return;
+    setInteractionLoading(true);
+    const result = recommended
+      ? await supabase.from("profile_recommendations").delete().eq("recommender_id", currentUserId).eq("profile_user_id", userId)
+      : await supabase.from("profile_recommendations").insert({ recommender_id: currentUserId, profile_user_id: userId });
+    setInteractionLoading(false);
+    if (result.error) {
+      toast.error("Could not update recommendation");
+      return;
+    }
+    setRecommended(!recommended);
+    setRecommendationCount((count) => count + (recommended ? -1 : 1));
+  };
+
+  const sendInterest = async () => {
+    if (!currentUserId || !userId) return;
+    setInteractionLoading(true);
+    const { error } = await supabase.from("profile_interests").insert({ sender_id: currentUserId, recipient_id: userId });
+    setInteractionLoading(false);
+    if (error) {
+      toast.error(error.code === "23505" ? "Interest already sent" : "Could not send interest");
+      return;
+    }
+    setInterestStatus("pending");
+    toast.success("Interest sent");
+  };
+
+  const respondToInterest = async (status: "accepted" | "declined") => {
+    if (!currentUserId || !userId) return;
+    setInteractionLoading(true);
+    const { error } = await supabase.from("profile_interests").update({ status, updated_at: new Date().toISOString() }).eq("sender_id", userId).eq("recipient_id", currentUserId);
+    setInteractionLoading(false);
+    if (error) {
+      toast.error("Could not update interest");
+      return;
+    }
+    setIncomingInterestStatus(status);
+    toast.success(status === "accepted" ? "Interest accepted" : "Interest declined");
+  };
 
   const publicPayload = sanitizePayloadForViewer(row.payload, row.private_fields) as Record<string, string>;
   const displayName =
@@ -126,6 +187,27 @@ const MemberProfile = () => {
                   {[publicPayload.occupation, publicPayload.education].filter(Boolean).join(" · ")}
                 </p>
               )}
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start pt-3">
+                {canInteract && (
+                  <>
+                    <Button variant={recommended ? "default" : "outline"} size="sm" onClick={toggleRecommendation} disabled={interactionLoading}>
+                      <Heart className={`h-4 w-4 mr-1.5 ${recommended ? "fill-current" : ""}`} />
+                      {recommended ? "Recommended" : "Recommend Profile"}
+                    </Button>
+                    <Button size="sm" onClick={sendInterest} disabled={interactionLoading || Boolean(interestStatus)}>
+                      <Send className="h-4 w-4 mr-1.5" />
+                      {interestStatus === "pending" ? "Interest Sent" : interestStatus === "accepted" ? "Interest Accepted" : "Send Interest"}
+                    </Button>
+                    {incomingInterestStatus === "pending" && (
+                      <>
+                        <Button variant="outline" size="sm" onClick={() => respondToInterest("accepted")} disabled={interactionLoading}>Accept Interest</Button>
+                        <Button variant="ghost" size="sm" onClick={() => respondToInterest("declined")} disabled={interactionLoading}>Decline</Button>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Recommended by {recommendationCount} members</p>
             </div>
           </div>
 
