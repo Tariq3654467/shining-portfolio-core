@@ -95,7 +95,7 @@ const BankTransferCheckout = ({ plan }: BankTransferCheckoutProps) => {
               <p className="text-xs font-semibold text-blue-900 mb-2">Next Steps:</p>
               <ol className="text-xs text-blue-800 space-y-1">
                 <li>1. Transfer the amount to the account above</li>
-                <li>2. Email your payment proof to support@bihe.com</li>
+                <li>2. Email your payment proof to ebiheteam@gmail.com</li>
                 <li>3. We'll verify and activate your plan</li>
               </ol>
             </div>

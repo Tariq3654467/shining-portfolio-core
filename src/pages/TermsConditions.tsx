@@ -132,9 +132,10 @@ const TermsConditions = () => {
               If you have any questions about these Terms & Conditions, please contact us at:
             </p>
             <div className="mt-4 p-4 bg-card border rounded-lg">
-              <p className="text-muted-foreground"><strong>Email:</strong> support@ebihe.com</p>
-              <p className="text-muted-foreground"><strong>Phone:</strong> +1 (530) 574-9007</p>
-              <p className="text-muted-foreground"><strong>Address:</strong> eBihe.com, Kathmandu, Nepal</p>
+              <p className="text-muted-foreground"><strong>Email:</strong> ebiheteam@gmail.com</p>
+              <p className="text-muted-foreground"><strong>Email:</strong> ebiheofficial@gmail.com</p>
+              <p className="text-muted-foreground"><strong>Phone:</strong> +1 956-433-2443</p>
+              <p className="text-muted-foreground"><strong>Location:</strong> California, USA</p>
             </div>
           </section>
         </motion.div>

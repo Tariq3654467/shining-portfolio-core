@@ -36,11 +36,12 @@ const Contact = () => {
           <h2 className="text-xl font-heading font-semibold mb-6">Get in Touch</h2>
           <div className="space-y-5">
             {[
-              { icon: Phone, label: "Phone", value: "+1 (530) 574-9007" },
-              { icon: Mail, label: "Email", value: "info@eBihe.com" },
-              { icon: MapPin, label: "Address", value: "United States" },
-            ].map((c) => (
-              <div key={c.label} className="flex items-start gap-4 min-w-0">
+              { icon: Phone, label: "Phone", value: "+1 956-433-2443" },
+              { icon: Mail, label: "Email", value: "ebiheteam@gmail.com" },
+              { icon: Mail, label: "Email", value: "ebiheofficial@gmail.com" },
+              { icon: MapPin, label: "Location", value: "California, USA" },
+            ].map((c, i) => (
+              <div key={i} className="flex items-start gap-4 min-w-0">
                 <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                   <c.icon className="h-5 w-5 text-primary" />
                 </div>

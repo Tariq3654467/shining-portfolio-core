@@ -46,15 +46,19 @@ const Footer = () => (
           <div className="flex flex-col gap-3 text-sm">
             <div className="flex items-center gap-2 min-w-0">
               <Phone className="h-4 w-4 text-primary" />
-              <span className="break-words whitespace-normal max-w-[10rem]">+1 (530) 574-9007</span>
+              <span className="break-words whitespace-normal">+1 956-433-2443</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <Mail className="h-4 w-4 text-primary" />
-              <span>info@eBihe.com</span>
+              <span className="break-words whitespace-normal">ebiheteam@gmail.com</span>
+            </div>
+            <div className="flex items-center gap-2 min-w-0">
+              <Mail className="h-4 w-4 text-primary" />
+              <span className="break-words whitespace-normal">ebiheofficial@gmail.com</span>
             </div>
             <div className="flex items-start gap-2">
               <MapPin className="h-4 w-4 text-primary mt-0.5" />
-              <span>USA</span>
+              <span>California, USA</span>
             </div>
           </div>
         </div>

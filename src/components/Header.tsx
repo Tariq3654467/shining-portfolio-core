@@ -64,7 +64,7 @@ const Header = () => {
         <div className="hidden lg:flex items-center gap-3 shrink-0">
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2 min-w-0">
             <Phone className="h-4 w-4" />
-            <span className="break-words whitespace-normal max-w-[10rem]">+1 (530) 574-9007</span>
+            <span className="break-words whitespace-normal">+1 956-433-2443</span>
           </div>
           {!loading && (
             user ? (
